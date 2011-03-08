@@ -37,8 +37,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/astar.o \
 	${OBJECTDIR}/thread.o \
-	${OBJECTDIR}/laserReader.o \
-	${OBJECTDIR}/mutex.o
+	${OBJECTDIR}/mutex.o \
+	${OBJECTDIR}/laserReader.o
 
 
 # C Compiler Flags
@@ -85,15 +85,15 @@ ${OBJECTDIR}/thread.o: thread.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
 
-${OBJECTDIR}/laserReader.o: laserReader.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
-
 ${OBJECTDIR}/mutex.o: mutex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
+
+${OBJECTDIR}/laserReader.o: laserReader.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
 
 # Subprojects
 .build-subprojects:

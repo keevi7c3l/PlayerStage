@@ -49,7 +49,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread</commandLine>
+          <commandLine>`pkg-config --cflags playerc` -I /usr/local/include/player-3.0/ `pkg-config --libs playerc` -std=c++0x -lpthread</commandLine>
         </ccTool>
       </compileType>
     </conf>

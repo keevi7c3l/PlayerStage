@@ -37,16 +37,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/astar.o \
 	${OBJECTDIR}/thread.o \
-	${OBJECTDIR}/laserReader.o \
-	${OBJECTDIR}/mutex.o
+	${OBJECTDIR}/mutex.o \
+	${OBJECTDIR}/laserReader.o
 
 
 # C Compiler Flags
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
-CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
+CCFLAGS=`pkg-config --cflags playerc` -I /usr/local/include/player-3.0/ `pkg-config --libs playerc` -std=c++0x -lpthread 
+CXXFLAGS=`pkg-config --cflags playerc` -I /usr/local/include/player-3.0/ `pkg-config --libs playerc` -std=c++0x -lpthread 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -85,15 +85,15 @@ ${OBJECTDIR}/thread.o: thread.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
 
-${OBJECTDIR}/laserReader.o: laserReader.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
-
 ${OBJECTDIR}/mutex.o: mutex.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
+
+${OBJECTDIR}/laserReader.o: laserReader.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
 
 # Subprojects
 .build-subprojects:
