@@ -15,7 +15,7 @@
 
 
 playerc_client_t *client;
-playerc_ranger_t *laser;
+playerc_laser_t *laser;
 playerc_position2d_t *position2d;
 
 using namespace std;
@@ -93,11 +93,11 @@ void plan() {
     }
 
     // are we deviated from path?
-//    if (min > PLANNER_PATH_DEVIATION_LIMIT) {
-//        // too much deviation
-//        PLAYER_WARN("planner: path deviation detected");
-//        return;
-//    }
+    if (min > PLANNER_PATH_DEVIATION_LIMIT) {
+        // too much deviation
+        PLAYER_WARN("planner: path deviation detected");
+        return;
+    }
 
     // then find a waypoint that is far away enough
     //uint32_t i;
@@ -126,8 +126,8 @@ int main() {
         return -1;
 
     /* Set up laser connectivity*/
-    laser = playerc_ranger_create(client, 1);
-    if (playerc_ranger_subscribe(laser, PLAYERC_OPEN_MODE))
+    laser = playerc_laser_create(client, 0);
+    if (playerc_laser_subscribe(laser, PLAYERC_OPEN_MODE))
         return -1;
 
     /* Set up position2d connectivity*/
@@ -187,8 +187,8 @@ int main() {
     }
 
     //Disconnect player
-    playerc_ranger_unsubscribe(laser);
-    playerc_ranger_destroy(laser);
+    playerc_laser_unsubscribe(laser);
+    playerc_laser_destroy(laser);
     playerc_client_disconnect(client);
     playerc_client_destroy(client);
 

@@ -50,8 +50,9 @@ void AStarThread::run() {
         mutex.unlock();
 
         if (begin != end) {
-            if (!astar_search(begin, end, &path, NULL, this->accuracy)) {
-                printf("planner: no path found between (%f, %f) and (%f, %f)\n", begin.px, begin.py, end.px, end.py);
+            // if (!astar_search(begin, end, &path, NULL, this->accuracy)) {
+            if (!findPath(begin.px, begin.py, end.px, end.py, &path)) {
+                printf("planner: no path found between (%f, %f) and (%f, %f)", begin.px, begin.py, end.px, end.py);
             }
 
             mutex.lock();

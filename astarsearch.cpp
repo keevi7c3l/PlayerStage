@@ -7,12 +7,20 @@
 #include <unordered_map>
 #include <cmath>
 
+typedef struct astar_pose2d {
+    int32_t x, y;
+} astar_pose2d_t;
+
 bool operator<(const astar_pose2d_t &a, const astar_pose2d_t &b) {
     return (a.x != b.x) ? a.x < b.x : a.y < b.y;
 }
 
 bool operator==(const astar_pose2d_t &a, const astar_pose2d_t &b) {
     return a.x == b.x && a.y == b.y;
+}
+
+uint64_t astar_pose2d_hash(const astar_pose2d_t &p) {
+    return (((uint64_t) p.x << 32) | (uint64_t) p.y);
 }
 
 typedef struct astar_node {
@@ -70,13 +78,11 @@ bool astar_search(const player_pose2d_t &begin,
 
     std::unordered_map<uint64_t, astar_pose2d_t> parents; // node parent to back trace the optimal path
 
-   // const double scale = 1;
-   // const double goal_accuracy = accuracy / scale;
+    const double scale = 0.1;
+    const double goal_accuracy = accuracy / scale;
 
-    //const astar_pose2d_t init = {(int32_t) floor(begin.px / scale), (int32_t) floor(begin.py / scale)}; // start position node
-    // const astar_pose2d_t goal = {(int32_t) floor(end.px / scale), (int32_t) floor(end.py / scale)}; // goal pose
-    const astar_pose2d_t init = {astar_scaler(begin.px), astar_scaler(begin.py)}; // start position node
-    const astar_pose2d_t goal = {astar_scaler(end.px), astar_scaler(end.py)}; // goal pose
+    const astar_pose2d_t init = {(int32_t) floor(begin.px / scale), (int32_t) floor(begin.py / scale)}; // start position node
+    const astar_pose2d_t goal = {(int32_t) floor(end.px / scale), (int32_t) floor(end.py / scale)}; // goal pose
 
     // insert first node which is the start pose
     costs[astar_pose2d_hash(init)] = 1.0;
@@ -104,7 +110,7 @@ bool astar_search(const player_pose2d_t &begin,
 
         // found the goal yet?
         if (head.pose == goal) break;
-        //if (goal_accuracy > 0.0 && hypot((double) (goal.x - head.pose.x), (double) (goal.y - head.pose.y)) <= goal_accuracy) break;
+        if (goal_accuracy > 0.0 && hypot((double) (goal.x - head.pose.x), (double) (goal.y - head.pose.y)) <= goal_accuracy) break;
 
         // mark it as already seen
         if (seen[astar_pose2d_hash(head.pose)]) continue;
@@ -115,16 +121,15 @@ bool astar_search(const player_pose2d_t &begin,
         // find sucessors
         for (i = 0; i < ASTAR_NODE_SUCCESSORS; i++) {
             // compute successor
-            child.pose.x = astar_scaler(head.pose.x + successors[i].pose.x);
-            child.pose.y = astar_scaler(head.pose.y + successors[i].pose.y);
+            child.pose.x = head.pose.x + successors[i].pose.x;
+            child.pose.y = head.pose.y + successors[i].pose.y;
 
             if (seen[astar_pose2d_hash(child.pose)]) continue;
 
-            //double ex = child.pose.x * scale + 0.5;
-            //double why = child.pose.y * scale + 0.5;
-            // if (isObst(ex, why) == 1) {
-            if (isObst(child.pose)) {
-                printf("Is Obstacle (%f,%f)\n", child.pose.x, child.pose.y);
+            double ex = child.pose.x * scale + 0.5;
+            double why = child.pose.y * scale + 0.5;
+            if (isObst(ex, why) == 1) {
+                //printf("Is Obstacle (%f,%f)\n", ex, why);
                 seen[astar_pose2d_hash(child.pose)] = true;
                 continue;
             }
@@ -170,18 +175,16 @@ bool astar_search(const player_pose2d_t &begin,
         astar_pose2d_t pose = head.pose;
         i = 0;
 
-        /*if (goal_accuracy > 0.0)
+        if (goal_accuracy > 0.0)
             rpath.push_back((player_pose2d_t) {
-                            //goal.x * scale + 0.5 * scale, goal.y * scale + 0.5 * scale, 0.0
-                            goal.x, goal.y, 0.0
-            });*/
+                            goal.x * scale + 0.5 * scale, goal.y * scale + 0.5 * scale, 0.0
+            });
 
         for (;;) {
             // convert coordinate back to real world coordinate
 
             rpath.push_back((player_pose2d_t) {
-                            //pose.x * scale + 0.5 * scale, pose.y * scale + 0.5 * scale, 0.0
-                            pose.x, pose.y, 0.0
+                            pose.x * scale + 0.5 * scale, pose.y * scale + 0.5 * scale, 0.0
             });
             if (pose == init) break;
             pose = parents[astar_pose2d_hash(pose)];

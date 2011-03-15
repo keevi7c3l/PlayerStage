@@ -14,7 +14,7 @@
 #include "thread.h"
 #include "mutex.h"
 #include "laserReader.h"
-#include "astarsearch.h"
+#include "astarImpTest.h"
 
 class AStarThread : public Thread {
 public:

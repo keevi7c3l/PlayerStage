@@ -17,7 +17,7 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
@@ -38,15 +38,16 @@ OBJECTFILES= \
 	${OBJECTDIR}/astar.o \
 	${OBJECTDIR}/thread.o \
 	${OBJECTDIR}/mutex.o \
-	${OBJECTDIR}/laserReader.o
+	${OBJECTDIR}/laserReader.o \
+	${OBJECTDIR}/astarImpTest.o
 
 
 # C Compiler Flags
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`pkg-config --cflags playerc` -I /usr/local/include/player-3.0/ `pkg-config --libs playerc` -std=c++0x -lpthread 
-CXXFLAGS=`pkg-config --cflags playerc` -I /usr/local/include/player-3.0/ `pkg-config --libs playerc` -std=c++0x -lpthread 
+CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
+CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -94,6 +95,11 @@ ${OBJECTDIR}/laserReader.o: laserReader.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
+
+${OBJECTDIR}/astarImpTest.o: astarImpTest.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/astarImpTest.o astarImpTest.cpp
 
 # Subprojects
 .build-subprojects:

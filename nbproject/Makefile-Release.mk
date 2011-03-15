@@ -17,7 +17,7 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=
+FC=gfortran
 AS=as
 
 # Macros
@@ -38,7 +38,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/astar.o \
 	${OBJECTDIR}/thread.o \
 	${OBJECTDIR}/mutex.o \
-	${OBJECTDIR}/laserReader.o
+	${OBJECTDIR}/laserReader.o \
+	${OBJECTDIR}/astarImpTest.o
 
 
 # C Compiler Flags
@@ -94,6 +95,11 @@ ${OBJECTDIR}/laserReader.o: laserReader.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
+
+${OBJECTDIR}/astarImpTest.o: astarImpTest.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/astarImpTest.o astarImpTest.cpp
 
 # Subprojects
 .build-subprojects:
