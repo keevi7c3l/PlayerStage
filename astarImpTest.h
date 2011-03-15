@@ -10,8 +10,8 @@
 #include <libplayercore/playercore.h>
 #include <libplayerc/playerc.h>
 
-#define WIDTH 100
-#define HEIGHT 100
+#include "laserReader.h"
+
 #define MAX_DIST 10000
 
 using namespace std;

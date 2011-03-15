@@ -2,12 +2,6 @@
 #include "laserReader.h"
 #include <math.h>
 
-#define DEG2RAD(a) ((a * M_PI) / 180)
-#define X_BOUND 8
-#define Y_BOUND 8
-#define MAPSIZE_X (X_BOUND*2*10)
-#define MAPSIZE_Y (X_BOUND*2*10)
-
 static int obstacle[MAPSIZE_X][MAPSIZE_Y];
 
 LaserReader::LaserReader(playerc_client_t *client,
@@ -16,25 +10,15 @@ LaserReader::LaserReader(playerc_client_t *client,
 
 }
 
-int getMatrixValue(double i) {
-    return (int) ((i + 8)*10);
+// relying on X and Y bound being the same
+
+extern int getMatrixValue(double i) {
+    return (int) ((i + X_BOUND) * SCALE);
 }
 
 extern int isObst(int x, int y) {
     int newX = getMatrixValue(x);
     int newY = getMatrixValue(y);
-    //printf("Checking: %d,%d\n", x, y);
-    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
-        //printf("obstacle is: %d\n", obstacle[newX][newY]);
-        return obstacle[newX][newY];
-    }
-    return 0;
-}
-
-extern int isObst(double x, double y) {
-    int newX = getMatrixValue(x);
-    int newY = getMatrixValue(y);
-    //printf("Checking: %f,%f\n", x, y);
     if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
         //printf("obstacle is: %d\n", obstacle[newX][newY]);
         return obstacle[newX][newY];
@@ -43,32 +27,33 @@ extern int isObst(double x, double y) {
 }
 
 void LaserReader::readLaser() {
+    playerc_client_read(client);
     double x, y, angle, dist;
     double robAng = position2d->pa;
+
+    double xPos = position2d->px;
+    double yPos = position2d->py;
+
 
     int i = 0;
     for (; i <= 360; i += 2) {
         dist = laser->ranges[i];
 
-        angle = ((1.5 * M_PI) + DEG2RAD(i / 2) + robAng);
-        //TODO: error here.
-        x = (position2d->px + (cos(angle) * dist));
-        y = (position2d->py + (sin(angle) * dist));
+        angle = 1.5 * M_PI + robAng + DTOR(i / 2.0);
 
-        if (x<-X_BOUND || x > X_BOUND || y<-Y_BOUND || y > Y_BOUND) {
-            //printf("Out of Map: (%f,%f)\n", x, y);
+        if (xPos < 0 && yPos < 0 || xPos > 0 && yPos > 0) {
+            y = xPos + (sin(angle) * dist);
+            x = yPos + (cos(angle) * dist);
         } else {
-            if (dist < 8) {
-                //printf("Obstacle at: (%f,%f)\n", x, y);
-                //printf("Obstacle at: (%d,%d)\n", getMatrixValue(x), getMatrixValue(y));
-                int obstX = getMatrixValue(x);
-                int obstY = getMatrixValue(y);
-                if (obstX < 0 || obstX > MAPSIZE_X || obstY < 0 || obstY > MAPSIZE_Y) {
-                } else {
-                    obstacle[obstX][obstY] = 1;
-                }
-            }
+            y = yPos + (sin(angle) * dist);
+            x = xPos + (cos(angle) * dist);
+        }
+
+        if (x<-X_BOUND - 0.5 || x > X_BOUND + 0.5 || y<-Y_BOUND - 0.5 || y > Y_BOUND + 0.5) {
+            printf("Out of Map: (%f,%f)\n", x, y);
+        } else if (dist < 8) {
+            //printf("Angle: %d Obstacle at: (%f,%f); distance: %f\n", i / 2, x, y, dist);
+            obstacle[getMatrixValue(x)][getMatrixValue(y)] = true;
         }
     }
-
 }

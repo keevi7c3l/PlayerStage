@@ -35,11 +35,12 @@ int Node::setParent(Node *par) {
 }
 
 bool blocked(int x, int y) {
+    // return isObst(x, y);
     return false;
 }
 
 bool isValidLocation(int sx, int sy, int x, int y) {
-    bool invalid = (x < 0) || (y < 0) || (x >= WIDTH) || (y >= HEIGHT);
+    bool invalid = (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y);
 
     if ((!invalid) && ((sx != x) || (sy != y))) {
         invalid = blocked(x, y);
@@ -73,13 +74,13 @@ bool inList(std::list<Node> &list, Node &node) {
 }
 
 bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path) {
-    Node nodes[WIDTH][HEIGHT];
-    bool visited[WIDTH][HEIGHT];
+    Node nodes[MAPSIZE_X][MAPSIZE_Y];
+    bool visited[MAPSIZE_X][MAPSIZE_X];
     std::list<Node> closed;
     std::list<Node> open;
 
-    for (int x = 0; x < WIDTH; x++) {
-        for (int y = 0; y < HEIGHT; y++) {
+    for (int x = 0; x < MAPSIZE_X; x++) {
+        for (int y = 0; y < MAPSIZE_Y; y++) {
             nodes[x][y] = Node(x, y);
         }
     }
@@ -148,13 +149,13 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
         rpath.push_back((player_pose2d_t) {
-            (double) target->x, (double) target->y, 0.0
+                        (double) target->x, (double) target->y, 0.0
         });
         target = target->parent;
     }
 
     rpath.push_back((player_pose2d_t) {
-        (double) sx, (double) sy, 0.0
+                    (double) sx, (double) sy, 0.0
     });
     *path = std::vector<player_pose2d_t > (rpath.rbegin(), rpath.rend());
     return true;
