@@ -35,7 +35,8 @@ int Node::setParent(Node *par) {
 }
 
 bool blocked(int x, int y) {
-    // return isObst(x, y);
+    //printf("Is %d,%d blocked? %d\n", x, y, isObst(x, y));
+    //return isObst(x, y);
     return false;
 }
 
@@ -74,8 +75,9 @@ bool inList(std::list<Node> &list, Node &node) {
 }
 
 bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path) {
-    Node nodes[MAPSIZE_X][MAPSIZE_Y];
-    bool visited[MAPSIZE_X][MAPSIZE_X];
+    //printf("Starting Find path\n");
+    static Node nodes[MAPSIZE_X][MAPSIZE_Y];
+    static bool visited[MAPSIZE_X][MAPSIZE_X];
     std::list<Node> closed;
     std::list<Node> open;
 
@@ -149,13 +151,13 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
         rpath.push_back((player_pose2d_t) {
-                        (double) target->x, (double) target->y, 0.0
+                        getCoorValue((double) target->x), getCoorValue((double) target->y), 0.0
         });
         target = target->parent;
     }
 
     rpath.push_back((player_pose2d_t) {
-                    (double) sx, (double) sy, 0.0
+                    getCoorValue((double) sx), getCoorValue((double) sy), 0.0
     });
     *path = std::vector<player_pose2d_t > (rpath.rbegin(), rpath.rend());
     return true;

@@ -16,6 +16,10 @@ extern int getMatrixValue(double i) {
     return (int) ((i + X_BOUND) * SCALE);
 }
 
+extern double getCoorValue(int i) {
+    return ((double) i / SCALE)-X_BOUND;
+}
+
 extern int isObst(int x, int y) {
     int newX = getMatrixValue(x);
     int newY = getMatrixValue(y);
@@ -24,6 +28,15 @@ extern int isObst(int x, int y) {
         return obstacle[newX][newY];
     }
     return 0;
+}
+
+void setObst(double x, double y) {
+    int newX = getMatrixValue(x);
+    int newY = getMatrixValue(y);
+    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+        //printf("obstacle is: %d\n", obstacle[newX][newY]);
+        obstacle[newX][newY] = true;
+    }
 }
 
 void LaserReader::readLaser() {
@@ -53,7 +66,7 @@ void LaserReader::readLaser() {
             printf("Out of Map: (%f,%f)\n", x, y);
         } else if (dist < 8) {
             //printf("Angle: %d Obstacle at: (%f,%f); distance: %f\n", i / 2, x, y, dist);
-            obstacle[getMatrixValue(x)][getMatrixValue(y)] = true;
+            setObst(x, y);
         }
     }
 }

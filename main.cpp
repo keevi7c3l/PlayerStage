@@ -119,6 +119,7 @@ void plan() {
 
 int main() {
 
+    printf("Starting up robot\n");
 
     /* Set up player/stage connectivity*/
     client = playerc_client_create(NULL, "localhost", 6665);
@@ -150,20 +151,25 @@ int main() {
     playerc_position2d_enable(position2d, 1); // Turn on Motors
     playerc_position2d_set_odom(position2d, 0, 0, 0); // Set odometer to zero
     playerc_client_read(client);
+
+    printf("Creating LaserReader\n");
     lr = new LaserReader(client, laser, position2d);
 
+    printf("Creating AstarTread\n");
     astar = new AStarThread(PLANNER_NEXT_WAYPOINT_DISTANCE);
+    printf("Starting AstarTread\n");
     astar->start();
 
     planner.goal.px = 8;
     planner.goal.py = 8;
+    printf("Starting Main Loop\n");
     for (;;) {
         playerc_client_read(client);
+        //printf("Starting Main Loop\n");
         plan();
-        
+
         //update laser
-        printf("Reading Laser Command\n");
-        playerc_client_read(client);
+       // printf("Reading Laser Command\n");
         lr->readLaser();
 
         player_position2d_cmd_pos_t cmd;
