@@ -5,12 +5,8 @@
                    displayName="Header Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>astar.h</itemPath>
       <itemPath>astarImpTest.h</itemPath>
-      <itemPath>astarsearch.h</itemPath>
       <itemPath>laserReader.h</itemPath>
-      <itemPath>mutex.h</itemPath>
-      <itemPath>thread.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -21,13 +17,9 @@
                    displayName="Source Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>astar.cpp</itemPath>
       <itemPath>astarImpTest.cpp</itemPath>
-      <itemPath>astarsearch.cpp</itemPath>
       <itemPath>laserReader.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
-      <itemPath>mutex.cpp</itemPath>
-      <itemPath>thread.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"
                    displayName="Test Files"

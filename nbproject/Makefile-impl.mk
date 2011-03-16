@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=aStarTest
+PROJECTNAME=aStarTest_clone0
 
 # Active Configuration
 DEFAULTCONF=Debug

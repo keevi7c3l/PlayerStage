@@ -17,7 +17,7 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=gfortran
+FC=
 AS=as
 
 # Macros
@@ -33,11 +33,7 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
-	${OBJECTDIR}/astarsearch.o \
 	${OBJECTDIR}/main.o \
-	${OBJECTDIR}/astar.o \
-	${OBJECTDIR}/thread.o \
-	${OBJECTDIR}/mutex.o \
 	${OBJECTDIR}/laserReader.o \
 	${OBJECTDIR}/astarImpTest.o
 
@@ -60,36 +56,16 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/astartest
+	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/astartest_clone0
 
-dist/Debug/GNU-Linux-x86/astartest: ${OBJECTFILES}
+dist/Debug/GNU-Linux-x86/astartest_clone0: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/astartest ${OBJECTFILES} ${LDLIBSOPTIONS} 
-
-${OBJECTDIR}/astarsearch.o: astarsearch.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/astarsearch.o astarsearch.cpp
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/astartest_clone0 ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
-
-${OBJECTDIR}/astar.o: astar.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/astar.o astar.cpp
-
-${OBJECTDIR}/thread.o: thread.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/thread.o thread.cpp
-
-${OBJECTDIR}/mutex.o: mutex.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/mutex.o mutex.cpp
 
 ${OBJECTDIR}/laserReader.o: laserReader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -107,7 +83,7 @@ ${OBJECTDIR}/astarImpTest.o: astarImpTest.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r build/Debug
-	${RM} dist/Debug/GNU-Linux-x86/astartest
+	${RM} dist/Debug/GNU-Linux-x86/astartest_clone0
 
 # Subprojects
 .clean-subprojects:

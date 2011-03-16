@@ -1,8 +1,6 @@
 #include "astarImpTest.h"
 #include <iostream>
 
-using namespace std;
-
 Node::Node() {
 }
 
@@ -35,9 +33,7 @@ int Node::setParent(Node *par) {
 }
 
 bool blocked(int x, int y) {
-    //printf("Is %d,%d blocked? %d\n", x, y, isObst(x, y));
     return isObst(x, y);
-    //return false;
 }
 
 bool isValidLocation(int sx, int sy, int x, int y) {
@@ -61,11 +57,10 @@ double getHeuCost(int x, int y, int tx, int ty) {
     return (float) (sqrt((dx * dx)+(dy * dy)));
 }
 
-bool inListRem(std::list<Node> &list, Node &node) {
+bool inList(std::list<Node> &list, Node &node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if (i->x == node.x && i->y == node.y) {
-            //list.erase(i);
             return true;
         }
     }
@@ -121,17 +116,15 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
 
 
                     if (nextStepCost < neighbour->cost) {
-                        if (inListRem(open, *neighbour)) {
+                        if (inList(open, *neighbour)) {
                             open.remove(*neighbour);
                             neighbour->inOpen = false;
                         }
-                        if (inListRem(closed, *neighbour)) {
+                        if (inList(closed, *neighbour)) {
                             closed.remove(*neighbour);
                             neighbour->inClosed = false;
                         }
                     }
-
-
 
                     if (!(neighbour-> inOpen) && !(neighbour->inClosed)) {
                         neighbour->cost = nextStepCost;

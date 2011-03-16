@@ -1,17 +1,14 @@
 #include <libplayerc/playerc.h>
 #include "laserReader.h"
-#include <math.h>
+#include <cmath>
 
 LaserReader::LaserReader(playerc_client_t *client,
                          playerc_laser_t *laser,
                          playerc_position2d_t *position2d) : client(client), laser(laser), position2d(position2d) {
-
 }
 
-// relying on X and Y bound being the same
-
 extern int getMatrixValue(double i) {
-    return (int) ((i + X_BOUND) * SCALE);
+    return (int) ((i + X_BOUND) * SCALE); // relying on X and Y bound being the same
 }
 
 extern double getCoorValue(int i) {
@@ -42,17 +39,15 @@ void setObst(double x, double y) {
 
 void LaserReader::readLaser() {
     playerc_client_read(client);
+    
     double x, y, angle, dist;
     double robAng = position2d->pa;
-
     double xPos = position2d->px;
     double yPos = position2d->py;
-
 
     int i = 0;
     for (; i <= 360; i += 2) {
         dist = laser->ranges[i];
-
         angle = 1.5 * M_PI + robAng + DTOR(i / 2.0);
 
         if (xPos < 0 && yPos < 0 || xPos > 0 && yPos > 0) {

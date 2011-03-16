@@ -1,123 +1,16 @@
-#include <stdio.h>
-#include <libplayerc/playerc.h>
-#include <math.h>
-#include <string>
-#include <queue>
 #include <iostream>
-#include <cstdlib>
-#include <map>
-#include <unordered_map>
-#include <assert.h>
-#include <limits>
-#include <vector>
-#include "astar.h"
-#include "laserReader.h"
-#include <time.h>
 #include <cmath>
+#include "laserReader.h"
+#include "astarImpTest.h"
 
+using namespace std;
 
 playerc_client_t *client;
 playerc_laser_t *laser;
 playerc_position2d_t *position2d;
 
-using namespace std;
-
-player_planner_data_t planner;
 std::vector<player_pose2d_t> path;
-AStarThread *astar;
 LaserReader *lr;
-
-
-#define PLANNER_PATH_DEVIATION_LIMIT 3.0
-#define PLANNER_NEXT_WAYPOINT_DISTANCE 1.5
-#define PLANNER_GOAL_DISTANCE 0.75
-
-void plan() {
-    planner.waypoint_idx = -1;
-    planner.valid = false;
-    planner.done = false;
-    planner.waypoint = planner.pos;
-    planner.pos.px = position2d->px;
-    planner.pos.py = position2d->py;
-    planner.pos.pa = position2d->pa;
-
-    const double goal_distance = hypot(planner.goal.px - planner.pos.px, planner.goal.py - planner.pos.py);
-
-    // are we done?
-    if ((planner.done = goal_distance < PLANNER_GOAL_DISTANCE)) {
-        // stop astar
-        astar->set(planner.pos, planner.pos);
-
-        // no path
-        path.clear();
-        planner.waypoints_count = 0;
-
-        printf("Path Done\n");
-        return;
-    }
-
-    // are we really close to our goal ready?
-    /*if (goal_distance < PLANNER_NEXT_WAYPOINT_DISTANCE)
-    {
-            // stop astar
-            astar->set(planner.pos, planner.pos);
-
-            // now the only thing in the path is our goal
-            path.clear();
-            path.push_back(planner.goal);
-            planner.waypoints_count = 1;
-            planner.waypoint_idx = 0;
-            planner.waypoint = planner.goal;
-            planner.valid = true;
-            return;
-    }*/
-
-    // talk to the astar thread
-    astar->set(planner.pos, planner.goal);
-    astar->get(&path);
-    planner.waypoints_count = path.size();
-
-    // do we have a path?
-    if (!path.size()) {
-        // no path found or not ready yet
-        printf("No Path\n");
-        return;
-    }
-
-    // find closest waypoint to our location
-    double min = std::numeric_limits<double>::infinity();
-    for (uint32_t i = 0; i < planner.waypoints_count; i++) {
-        const double d = hypot(path[i].px - planner.pos.px, path[i].py - planner.pos.py);
-        if (d <= min) {
-            min = d;
-            planner.waypoint_idx = i;
-        }
-    }
-
-    // are we deviated from path?
-    if (min > PLANNER_PATH_DEVIATION_LIMIT) {
-        // too much deviation
-        PLAYER_WARN("planner: path deviation detected");
-        return;
-    }
-
-    // then find a waypoint that is far away enough
-    //uint32_t i;
-    /*for (i = planner.waypoint_idx; i < planner.waypoints_count; i++)
-    {
-            // current waypoint is set to some waypoint ahead of the current position
-            if (hypot(path[i].px - planner.pos.px, path[i].py - planner.pos.py) > PLANNER_NEXT_WAYPOINT_DISTANCE)
-            {
-                    break;
-            }
-    }*/
-    const uint32_t next_waypoint_dist = (uint32_t) ceil(PLANNER_NEXT_WAYPOINT_DISTANCE / 0.1);
-    planner.waypoint_idx += next_waypoint_dist;
-    if (planner.waypoint_idx >= (int) planner.waypoints_count)
-        planner.waypoint_idx = planner.waypoints_count - 1;
-    planner.waypoint = path[planner.waypoint_idx];
-    planner.valid = true;
-}
 
 bool isArrived(double tx, double ty) {
     playerc_client_read(client);
@@ -163,41 +56,22 @@ int main() {
     lr = new LaserReader(client, laser, position2d);
     usleep(10000);
 
-    // printf("Creating AstarTread\n");
-    // astar = new AStarThread(PLANNER_NEXT_WAYPOINT_DISTANCE);
-    //printf("Starting AstarTread\n");
-    //astar->start();
-
     std::vector<player_pose2d_t> path;
     printf("Starting Main Loop\n");
     for (;;) {
-        playerc_client_read(client);
         lr->readLaser();
+
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
             printf("No Path main\n");
-            //continue;
         }
-        //    int times = (time(NULL) - seconds);
-        //
         path.pop_back();
         path.pop_back();
         player_pose2d_t next = path.back();
-
-        //    std::vector<player_pose2d_t>::iterator it;
-        //    std::cout << "Printing Path" << std::endl;
-        //    for (it = path.begin(); it != path.end(); it++) {
-        //        std::cout << it->px << ", " << it->py << "->";
-        //    }
-        //
-        //    std::cout << std::endl;
-        //    std::cout << "PATH DONE; it took:" << times << std::endl;
 
         printf("Going to: %f,%f \n", next.px, next.py);
         playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
         while (!isArrived(next.px, next.py)) {
         }
-
-        //usleep(10000);
     }
 
     //Disconnect player
