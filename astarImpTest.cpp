@@ -36,8 +36,8 @@ int Node::setParent(Node *par) {
 
 bool blocked(int x, int y) {
     //printf("Is %d,%d blocked? %d\n", x, y, isObst(x, y));
-    //return isObst(x, y);
-    return false;
+    return isObst(x, y);
+    //return false;
 }
 
 bool isValidLocation(int sx, int sy, int x, int y) {

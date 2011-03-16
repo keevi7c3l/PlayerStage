@@ -192,7 +192,7 @@ int main() {
         //    std::cout << std::endl;
         //    std::cout << "PATH DONE; it took:" << times << std::endl;
 
-        printf("Going to: %f,%f\n", next.px, next.py);
+        printf("Going to: %f,%f \n", next.px, next.py);
         playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
         while (!isArrived(next.px, next.py)) {
         }

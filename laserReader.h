@@ -31,5 +31,7 @@ extern int isObst(int x, int y);
 extern int getMatrixValue(double i);
 extern double getCoorValue(int i);
 
+static bool obstacle[MAPSIZE_X][MAPSIZE_Y];
+
 #endif	/* LASERREADER_H */
 

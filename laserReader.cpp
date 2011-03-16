@@ -2,8 +2,6 @@
 #include "laserReader.h"
 #include <math.h>
 
-static int obstacle[MAPSIZE_X][MAPSIZE_Y];
-
 LaserReader::LaserReader(playerc_client_t *client,
                          playerc_laser_t *laser,
                          playerc_position2d_t *position2d) : client(client), laser(laser), position2d(position2d) {
@@ -21,21 +19,24 @@ extern double getCoorValue(int i) {
 }
 
 extern int isObst(int x, int y) {
-    int newX = getMatrixValue(x);
-    int newY = getMatrixValue(y);
-    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
-        //printf("obstacle is: %d\n", obstacle[newX][newY]);
-        return obstacle[newX][newY];
+    if (x >= 0 && x < MAPSIZE_X && y >= 0 && y < MAPSIZE_X) {
+        return obstacle[x][y];
     }
-    return 0;
+    return true;
 }
 
 void setObst(double x, double y) {
-    int newX = getMatrixValue(x);
-    int newY = getMatrixValue(y);
-    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
-        //printf("obstacle is: %d\n", obstacle[newX][newY]);
-        obstacle[newX][newY] = true;
+    // add 0.2 padding
+    for (double i = -0.2; i <= 0.2; i += 0.1) {
+        for (double j = -0.2; j <= 0.2; j += 0.1) {
+            double xn = x + i;
+            double yn = y + j;
+            int newX = getMatrixValue(xn);
+            int newY = getMatrixValue(yn);
+            if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+                obstacle[newX][newY] = true;
+            }
+        }
     }
 }
 
@@ -64,8 +65,7 @@ void LaserReader::readLaser() {
 
         if (x<-X_BOUND - 0.5 || x > X_BOUND + 0.5 || y<-Y_BOUND - 0.5 || y > Y_BOUND + 0.5) {
             printf("Out of Map: (%f,%f)\n", x, y);
-        } else if (dist < 8) {
-            //printf("Angle: %d Obstacle at: (%f,%f); distance: %f\n", i / 2, x, y, dist);
+        } else if (dist < laser->max_range) {
             setObst(x, y);
         }
     }
