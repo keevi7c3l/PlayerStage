@@ -57,7 +57,7 @@ double getHeuCost(int x, int y, int tx, int ty) {
     return (float) (sqrt((dx * dx)+(dy * dy)));
 }
 
-bool inList(std::list<Node> &list, Node &node) {
+bool inList(list<Node> &list, Node &node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if (i->x == node.x && i->y == node.y) {
@@ -67,10 +67,10 @@ bool inList(std::list<Node> &list, Node &node) {
     return false;
 }
 
-bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path) {
+bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
 
-    std::list<Node> closed;
-    std::list<Node> open;
+    list<Node> closed;
+    list<Node> open;
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
@@ -129,7 +129,7 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
                     if (!(neighbour-> inOpen) && !(neighbour->inClosed)) {
                         neighbour->cost = nextStepCost;
                         neighbour->heuristic = getHeuCost(xp, yp, tx, ty);
-                        maxDepth = std::max(maxDepth, neighbour->setParent(current));
+                        maxDepth = max(maxDepth, neighbour->setParent(current));
                         open.push_back(*neighbour);
                         neighbour->inOpen = true;
                         open.sort();
@@ -140,7 +140,7 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     }
 
     if (nodes[tx][ty].parent == NULL) {
-        std::cout << "NO PATH FOUND" << std::endl;
+        cout << "NO PATH FOUND" << endl;
         return false;
     }
 

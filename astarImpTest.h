@@ -7,6 +7,8 @@
 
 #define MAX_DIST 10000
 
+using namespace std;
+
 class Node {
 public:
     int x, y, depth;
@@ -33,7 +35,7 @@ public:
     Path(int x, int y);
 };
 
-bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path);
+bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
 
 static Node nodes[MAPSIZE_X][MAPSIZE_Y];
 static bool visited[MAPSIZE_X][MAPSIZE_Y];

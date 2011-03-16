@@ -9,7 +9,7 @@ playerc_client_t *client;
 playerc_laser_t *laser;
 playerc_position2d_t *position2d;
 
-std::vector<player_pose2d_t> path;
+vector<player_pose2d_t> path;
 LaserReader *lr;
 
 bool isArrived(double tx, double ty) {
@@ -19,7 +19,7 @@ bool isArrived(double tx, double ty) {
 
 int main() {
 
-    printf("Starting up robot\n");
+    cout << "Starting up robot" << endl;
 
     /* Set up player/stage connectivity*/
     client = playerc_client_create(NULL, "localhost", 6665);
@@ -52,23 +52,23 @@ int main() {
     playerc_position2d_set_odom(position2d, 0, 0, 0); // Set odometer to zero
     playerc_client_read(client);
 
-    printf("Creating LaserReader\n");
+    cout << "Creating LaserReader" << endl;
     lr = new LaserReader(client, laser, position2d);
     usleep(10000);
 
-    std::vector<player_pose2d_t> path;
-    printf("Starting Main Loop\n");
+    vector<player_pose2d_t> path;
+    cout << "Starting Main Loop" << endl;
     for (;;) {
         lr->readLaser();
 
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
-            printf("No Path main\n");
+            cout << "No Path found from Main" << endl;
         }
         path.pop_back();
         path.pop_back();
         player_pose2d_t next = path.back();
 
-        printf("Going to: %f,%f \n", next.px, next.py);
+        cout << "Going to:" << next.px", " << next.py << endl;
         playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
         while (!isArrived(next.px, next.py)) {
         }
