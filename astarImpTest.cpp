@@ -1,10 +1,7 @@
 #include "astarImpTest.h"
-#include "boost/multi_array.hpp"
 #include <iostream>
 
 using namespace std;
-typedef boost::multi_array<Node, 2 > node_array;
-typedef boost::multi_array<bool, 2 > bool_array;
 
 Node::Node() {
 }
@@ -68,7 +65,7 @@ bool inListRem(std::list<Node> &list, Node &node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if (i->x == node.x && i->y == node.y) {
-            list.erase(i);
+            //list.erase(i);
             return true;
         }
     }
@@ -76,10 +73,6 @@ bool inListRem(std::list<Node> &list, Node &node) {
 }
 
 bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path) {
-    //printf("Starting Find path\n");
-
-    node_array nodes(boost::extents[MAPSIZE_X][MAPSIZE_Y]);
-    bool_array visited(boost::extents[MAPSIZE_X][MAPSIZE_Y]);
 
     std::list<Node> closed;
     std::list<Node> open;
@@ -129,12 +122,16 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
 
                     if (nextStepCost < neighbour->cost) {
                         if (inListRem(open, *neighbour)) {
+                            open.remove(*neighbour);
                             neighbour->inOpen = false;
                         }
                         if (inListRem(closed, *neighbour)) {
+                            closed.remove(*neighbour);
                             neighbour->inClosed = false;
                         }
                     }
+
+                    
 
                     if (!(neighbour-> inOpen) && !(neighbour->inClosed)) {
                         neighbour->cost = nextStepCost;
@@ -158,15 +155,15 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     Node *target = &nodes[tx][ty];
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
-        rpath.push_back((player_pose2d_t) {
+        path->push_back((player_pose2d_t) {
                         getCoorValue((double) target->x), getCoorValue((double) target->y), 0.0
         });
         target = target->parent;
     }
 
-    rpath.push_back((player_pose2d_t) {
+    path->push_back((player_pose2d_t) {
                     getCoorValue((double) sx), getCoorValue((double) sy), 0.0
     });
-    *path = std::vector<player_pose2d_t > (rpath.rbegin(), rpath.rend());
+    //*path = std::vector<player_pose2d_t > (rpath.rbegin(), rpath.rend());
     return true;
 }

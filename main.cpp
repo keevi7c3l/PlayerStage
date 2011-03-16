@@ -13,6 +13,7 @@
 #include "astar.h"
 #include "laserReader.h"
 #include <time.h>
+#include <cmath>
 
 
 playerc_client_t *client;
@@ -118,6 +119,11 @@ void plan() {
     planner.valid = true;
 }
 
+bool isArrived(double tx, double ty) {
+    playerc_client_read(client);
+    return ((abs(position2d->px - tx) <= 0.15) && (abs(position2d->py - ty) <= 0.15));
+}
+
 int main() {
 
     printf("Starting up robot\n");
@@ -164,36 +170,35 @@ int main() {
 
     std::vector<player_pose2d_t> path;
     printf("Starting Main Loop\n");
-    // for (;;) {
-    playerc_client_read(client);
-    lr->readLaser();
-    time_t seconds = time(NULL);
-    while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
-        printf("No Path main\n");
-        //continue;
+    for (;;) {
+        playerc_client_read(client);
+        lr->readLaser();
+        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
+            printf("No Path main\n");
+            //continue;
+        }
+        //    int times = (time(NULL) - seconds);
+        //
+        path.pop_back();
+        path.pop_back();
+        player_pose2d_t next = path.back();
+
+        //    std::vector<player_pose2d_t>::iterator it;
+        //    std::cout << "Printing Path" << std::endl;
+        //    for (it = path.begin(); it != path.end(); it++) {
+        //        std::cout << it->px << ", " << it->py << "->";
+        //    }
+        //
+        //    std::cout << std::endl;
+        //    std::cout << "PATH DONE; it took:" << times << std::endl;
+
+        printf("Going to: %f,%f\n", next.px, next.py);
+        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
+        while (!isArrived(next.px, next.py)) {
+        }
+
+        //usleep(10000);
     }
-    int times = (time(NULL) - seconds);
-
-    //  path.pop_back();
-    //   player_pose2d_t next = path.front();
-    //   path.pop_back();
-
-    std::vector<player_pose2d_t>::iterator it;
-    std::cout << "Printing Path" << std::endl;
-    for (it = path.begin(); it != path.end(); it++) {
-        std::cout << it->px << ", " << it->py << "->";
-    }
-
-    std::cout << std::endl;
-    std::cout << "PATH DONE; it took:" << times << std::endl;
-
-    //  printf("Going to: %f,%f\n", next.px, next.py);
-
-    //  playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
-
-    usleep(10000);
-
-    //  }
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);
