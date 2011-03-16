@@ -48,7 +48,7 @@ void AStarThread::run() {
         mutex.unlock();
 
         if (begin != end) {
-            //printf("Looking for path between %f,%f and %f,%f\n", begin.px, begin.py, end.px, end.py);
+            printf("Looking for path between %f,%f and %f,%f\n", begin.px, begin.py, end.px, end.py);
             if (!findPath(getMatrixValue(begin.px), getMatrixValue(begin.py), getMatrixValue(end.px), getMatrixValue(end.py), &path)) {
                 printf("planner: no path found between (%f, %f) and (%f, %f)\n", begin.px, begin.py, end.px, end.py);
             }

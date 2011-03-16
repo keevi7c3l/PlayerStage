@@ -12,6 +12,7 @@
 #include <vector>
 #include "astar.h"
 #include "laserReader.h"
+#include <time.h>
 
 
 playerc_client_t *client;
@@ -154,43 +155,45 @@ int main() {
 
     printf("Creating LaserReader\n");
     lr = new LaserReader(client, laser, position2d);
+    usleep(10000);
 
-    printf("Creating AstarTread\n");
-    astar = new AStarThread(PLANNER_NEXT_WAYPOINT_DISTANCE);
-    printf("Starting AstarTread\n");
-    astar->start();
+    // printf("Creating AstarTread\n");
+    // astar = new AStarThread(PLANNER_NEXT_WAYPOINT_DISTANCE);
+    //printf("Starting AstarTread\n");
+    //astar->start();
 
-    planner.goal.px = 8;
-    planner.goal.py = 8;
+    std::vector<player_pose2d_t> path;
     printf("Starting Main Loop\n");
-    for (;;) {
-        playerc_client_read(client);
-        //printf("Starting Main Loop\n");
-        plan();
-
-        //update laser
-       // printf("Reading Laser Command\n");
-        lr->readLaser();
-
-        player_position2d_cmd_pos_t cmd;
-        if (planner.valid && !planner.done) {
-            // tell local planner to go towards next waypoint
-            cmd.pos = planner.waypoint;
-            cmd.state = true;
-
-        } else {
-            // tell local planner to stop
-            cmd.pos = planner.pos;
-            cmd.state = false;
-        }
-
-        printf("Going to: %f,%f\n", cmd.pos.px, cmd.pos.py);
-
-        playerc_position2d_set_cmd_pose_with_vel(position2d, cmd.pos, cmd.vel, cmd.state);
-
-        usleep(10000);
-
+    // for (;;) {
+    playerc_client_read(client);
+    lr->readLaser();
+    time_t seconds = time(NULL);
+    while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
+        printf("No Path main\n");
+        //continue;
     }
+    int times = (time(NULL) - seconds);
+
+    //  path.pop_back();
+    //   player_pose2d_t next = path.front();
+    //   path.pop_back();
+
+    std::vector<player_pose2d_t>::iterator it;
+    std::cout << "Printing Path" << std::endl;
+    for (it = path.begin(); it != path.end(); it++) {
+        std::cout << it->px << ", " << it->py << "->";
+    }
+
+    std::cout << std::endl;
+    std::cout << "PATH DONE; it took:" << times << std::endl;
+
+    //  printf("Going to: %f,%f\n", next.px, next.py);
+
+    //  playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
+
+    usleep(10000);
+
+    //  }
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);

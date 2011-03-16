@@ -21,6 +21,8 @@ public:
     int x, y, depth;
     float cost, heuristic;
     Node *parent;
+    bool inClosed;
+    bool inOpen;
 
     Node();
 

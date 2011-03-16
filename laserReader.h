@@ -11,7 +11,7 @@
 
 #define X_BOUND 9
 #define Y_BOUND 9
-#define SCALE 100
+#define SCALE 10
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (X_BOUND*2*SCALE)
 

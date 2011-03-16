@@ -1,12 +1,15 @@
 #include "astarImpTest.h"
+#include "boost/multi_array.hpp"
 #include <iostream>
 
 using namespace std;
+typedef boost::multi_array<Node, 2 > node_array;
+typedef boost::multi_array<bool, 2 > bool_array;
 
 Node::Node() {
 }
 
-Node::Node(int x, int y) : x(x), y(y) {
+Node::Node(int x, int y) : x(x), y(y), inOpen(false), inClosed(false) {
 };
 
 bool Node::operator<(const Node& other) {
@@ -58,26 +61,26 @@ double getHeuCost(int x, int y, int tx, int ty) {
     float dx = tx - x;
     float dy = ty - y;
 
-    float result = (float) (sqrt((dx * dx)+(dy * dy)));
-
-    return result;
+    return (float) (sqrt((dx * dx)+(dy * dy)));
 }
 
-bool inList(std::list<Node> &list, Node &node) {
+bool inListRem(std::list<Node> &list, Node &node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if (i->x == node.x && i->y == node.y) {
+            list.erase(i);
             return true;
         }
     }
-
     return false;
 }
 
 bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path) {
     //printf("Starting Find path\n");
-    static Node nodes[MAPSIZE_X][MAPSIZE_Y];
-    static bool visited[MAPSIZE_X][MAPSIZE_X];
+
+    node_array nodes(boost::extents[MAPSIZE_X][MAPSIZE_Y]);
+    bool_array visited(boost::extents[MAPSIZE_X][MAPSIZE_Y]);
+
     std::list<Node> closed;
     std::list<Node> open;
 
@@ -93,6 +96,7 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     closed.clear();
     open.clear();
     open.push_back(nodes[sx][sy]);
+    nodes[sx][sy].inOpen = true;
 
     nodes[tx][ty].parent = NULL;
 
@@ -105,6 +109,8 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
         }
         open.remove(*current);
         closed.push_back(*current);
+        current->inOpen = false;
+        current->inClosed = true;
 
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
@@ -120,20 +126,22 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
                     Node *neighbour = &nodes[xp][yp];
                     visited[xp][yp] = true;
 
+
                     if (nextStepCost < neighbour->cost) {
-                        if (inList(open, *neighbour)) {
-                            open.remove(*neighbour);
+                        if (inListRem(open, *neighbour)) {
+                            neighbour->inOpen = false;
                         }
-                        if (inList(closed, *neighbour)) {
-                            closed.remove(*neighbour);
+                        if (inListRem(closed, *neighbour)) {
+                            neighbour->inClosed = false;
                         }
                     }
 
-                    if (!inList(open, *neighbour) && (!inList(closed, *neighbour))) {
+                    if (!(neighbour-> inOpen) && !(neighbour->inClosed)) {
                         neighbour->cost = nextStepCost;
                         neighbour->heuristic = getHeuCost(xp, yp, tx, ty);
                         maxDepth = std::max(maxDepth, neighbour->setParent(current));
                         open.push_back(*neighbour);
+                        neighbour->inOpen = true;
                         open.sort();
                     }
                 }
