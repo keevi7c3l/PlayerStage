@@ -63,12 +63,13 @@ int main() {
 
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
             cout << "No Path found from Main" << endl;
+            playerc_client_read(client);
         }
         path.pop_back();
         path.pop_back();
         player_pose2d_t next = path.back();
 
-        cout << "Going to:" << next.px", " << next.py << endl;
+        cout << "Going to:" << next.px << ", " << next.py << endl;
         playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
         while (!isArrived(next.px, next.py)) {
         }
