@@ -14,6 +14,7 @@
 #define SCALE 10
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (X_BOUND*2*SCALE)
+#define PADDING 0.2
 
 class LaserReader {
 public:

@@ -27,8 +27,8 @@ extern int isObst(int x, int y) {
 
 void setObst(double x, double y) {
     // add 0.2 padding
-    for (double i = -0.2; i <= 0.2; i += 0.1) {
-        for (double j = -0.2; j <= 0.2; j += 0.1) {
+    for (double i = -PADDING; i <= PADDING; i += (1.0 / SCALE)) {
+        for (double j = -PADDING; j <= PADDING; j += (1.0 / SCALE)) {
             double xn = x + i;
             double yn = y + j;
             int newX = getMatrixValue(xn);
