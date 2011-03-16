@@ -131,7 +131,7 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
                         }
                     }
 
-                    
+
 
                     if (!(neighbour-> inOpen) && !(neighbour->inClosed)) {
                         neighbour->cost = nextStepCost;
@@ -151,7 +151,6 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
         return false;
     }
 
-    std::vector<player_pose2d_t> rpath;
     Node *target = &nodes[tx][ty];
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
@@ -164,6 +163,5 @@ bool findPath(int sx, int sy, int tx, int ty, std::vector<player_pose2d_t> *path
     path->push_back((player_pose2d_t) {
                     getCoorValue((double) sx), getCoorValue((double) sy), 0.0
     });
-    //*path = std::vector<player_pose2d_t > (rpath.rbegin(), rpath.rend());
     return true;
 }
