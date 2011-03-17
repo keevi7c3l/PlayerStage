@@ -3,6 +3,9 @@
 #include "laserReader.h"
 #include "astarImpTest.h"
 
+#define X_GOAL 8
+#define Y_GOAL -5
+
 using namespace std;
 
 playerc_client_t *client;
@@ -15,6 +18,14 @@ LaserReader *lr;
 bool isArrived(double tx, double ty) {
     playerc_client_read(client);
     return ((abs(position2d->px - tx) <= 0.15) && (abs(position2d->py - ty) <= 0.15));
+}
+
+void printPath() {
+    std::vector<player_pose2d_t>::iterator it = path.begin();
+    while (it != path.end()) {
+        cout << "(" << it->px << ", " << it->py << ")" << endl;
+        it++;
+    }
 }
 
 int main() {
@@ -56,24 +67,25 @@ int main() {
     lr = new LaserReader(client, laser, position2d);
     usleep(10000);
 
-    vector<player_pose2d_t> path;
+    //vector<player_pose2d_t> path;
     cout << "Starting Main Loop" << endl;
-    for (;;) {
-        lr->readLaser();
+    // for (;;) {
+    lr->readLaser();
 
-        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
-            cout << "No Path found from Main" << endl;
-            playerc_client_read(client);
-        }
-        path.pop_back();
-        path.pop_back();
-        player_pose2d_t next = path.back();
-
-        cout << "Going to:" << next.px << ", " << next.py << endl;
-        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
-        while (!isArrived(next.px, next.py)) {
-        }
+    while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
+        cout << "No Path found from Main" << endl;
+        playerc_client_read(client);
     }
+    printPath();
+    //        path.pop_back();
+    //        path.pop_back();
+    //        player_pose2d_t next = path.back();
+    //
+    //        cout << "Going to:" << next.px << ", " << next.py << endl;
+    //        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
+    //        while (!isArrived(next.px, next.py)) {
+    //        }
+    // }
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);
