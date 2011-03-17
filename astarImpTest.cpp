@@ -4,7 +4,7 @@
 Node::Node() {
 }
 
-Node::Node(int x, int y) : x(x), y(y), inOpen(false), inClosed(false) {
+Node::Node(int x, int y) : x(x), y(y), inOpen(false), inClosed(false), cost(0), heuristic(0), depth(0) {
 };
 
 bool Node::operator<(const Node& other) {
@@ -71,6 +71,7 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
 
     list<Node> closed;
     list<Node> open;
+    int maxDepth = 0;
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
@@ -78,17 +79,10 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
         }
     }
 
-    nodes[sx][sy].cost = 0;
-    nodes[sx][sy].depth = 0;
-
-    closed.clear();
-    open.clear();
     open.push_back(nodes[sx][sy]);
     nodes[sx][sy].inOpen = true;
 
     nodes[tx][ty].parent = NULL;
-
-    int maxDepth = 0;
 
     while ((maxDepth < MAX_DIST) && (open.size() != 0)) {
         Node *current = &(open.front());

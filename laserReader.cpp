@@ -45,8 +45,7 @@ void LaserReader::readLaser() {
     double xPos = position2d->px;
     double yPos = position2d->py;
 
-    int i = 0;
-    for (; i <= 360; i += 2) {
+    for (int i = 0; i <= 360; i += 2) {
         dist = laser->ranges[i];
         angle = 1.5 * M_PI + robAng + DTOR(i / 2.0);
 
