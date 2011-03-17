@@ -69,23 +69,23 @@ int main() {
 
     //vector<player_pose2d_t> path;
     cout << "Starting Main Loop" << endl;
-    // for (;;) {
-    lr->readLaser();
+    for (;;) {
+        lr->readLaser();
 
-    while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
-        cout << "No Path found from Main" << endl;
-        playerc_client_read(client);
+        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
+            cout << "No Path found from Main" << endl;
+            playerc_client_read(client);
+        }
+        printPath();
+        path.pop_back();
+        path.pop_back();
+        player_pose2d_t next = path.back();
+
+        cout << "Going to:" << next.px << ", " << next.py << endl;
+        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
+        while (!isArrived(next.px, next.py)) {
+        }
     }
-    printPath();
-    //        path.pop_back();
-    //        path.pop_back();
-    //        player_pose2d_t next = path.back();
-    //
-    //        cout << "Going to:" << next.px << ", " << next.py << endl;
-    //        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
-    //        while (!isArrived(next.px, next.py)) {
-    //        }
-    // }
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);
