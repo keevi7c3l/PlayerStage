@@ -3,8 +3,8 @@
 #include "laserReader.h"
 #include "astarImpTest.h"
 
-#define X_GOAL 8
-#define Y_GOAL -5
+#define X_GOAL 7
+#define Y_GOAL 7
 
 using namespace std;
 
@@ -69,14 +69,13 @@ int main() {
 
     //vector<player_pose2d_t> path;
     cout << "Starting Main Loop" << endl;
-    for (;;) {
+    while (position2d->px != X_GOAL && position2d->py != Y_GOAL) {
         lr->readLaser();
 
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
             cout << "No Path found from Main" << endl;
             playerc_client_read(client);
         }
-        printPath();
         path.pop_back();
         path.pop_back();
         player_pose2d_t next = path.back();

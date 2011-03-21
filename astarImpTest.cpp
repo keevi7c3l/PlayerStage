@@ -50,11 +50,11 @@ double getMovCost(int currX, int currY, int x, int y) {
     return 1;
 }
 
-double getHeuCost(int x, int y, int tx, int ty) {
+float getHeuCost(int x, int y, int tx, int ty) {
     float dx = tx - x;
     float dy = ty - y;
 
-    return (float) (sqrt((dx * dx)+(dy * dy)));
+    return (sqrt((dx * dx)+(dy * dy)));
 }
 
 bool inList(list<Node> &list, Node &node) {
