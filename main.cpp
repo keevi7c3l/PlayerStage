@@ -3,8 +3,8 @@
 #include "laserReader.h"
 #include "astarImpTest.h"
 
-#define X_GOAL 7
-#define Y_GOAL 7
+#define X_GOAL -5
+#define Y_GOAL -4
 
 using namespace std;
 
@@ -28,10 +28,7 @@ void printPath() {
     }
 }
 
-int main() {
-
-    cout << "Starting up robot" << endl;
-
+int init() {
     /* Set up player/stage connectivity*/
     client = playerc_client_create(NULL, "localhost", 6665);
     if (playerc_client_connect(client) != 0)
@@ -62,14 +59,19 @@ int main() {
     playerc_position2d_enable(position2d, 1); // Turn on Motors
     playerc_position2d_set_odom(position2d, 0, 0, 0); // Set odometer to zero
     playerc_client_read(client);
+    return 0;
+}
+
+int main() {
+
+    cout << "Starting up robot" << endl;
+    if (init() == -1) return -1;
 
     cout << "Creating LaserReader" << endl;
     lr = new LaserReader(client, laser, position2d);
-    usleep(10000);
 
-    //vector<player_pose2d_t> path;
     cout << "Starting Main Loop" << endl;
-    while (position2d->px != X_GOAL && position2d->py != Y_GOAL) {
+    while (!isArrived(X_GOAL, Y_GOAL)) {
         lr->readLaser();
 
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
@@ -85,6 +87,8 @@ int main() {
         while (!isArrived(next.px, next.py)) {
         }
     }
+
+    cout << "Arrived at Destination" << endl;
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);

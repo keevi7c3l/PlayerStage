@@ -41,7 +41,7 @@ void LaserReader::readLaser() {
     playerc_client_read(client);
     double x, y, angle, dist, robAng, xPos, yPos;
 
-    for (int i = 0; i < 180; i++) {
+    for (int i = 0; i < laser->scan_count; i++) {
         robAng = position2d->pa;
         xPos = position2d->px;
         yPos = position2d->py;
