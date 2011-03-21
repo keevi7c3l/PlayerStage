@@ -43,7 +43,7 @@
       </toolsSet>
       <compileType>
         <ccTool>
-          <commandLine>`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread</commandLine>
+          <commandLine>`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg</commandLine>
         </ccTool>
       </compileType>
     </conf>

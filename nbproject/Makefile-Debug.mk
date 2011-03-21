@@ -17,7 +17,7 @@ RANLIB=ranlib
 CC=gcc
 CCC=g++
 CXX=g++
-FC=gfortran
+FC=
 AS=as
 
 # Macros
@@ -42,8 +42,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
-CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread 
+CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
+CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
 
 # Fortran Compiler Flags
 FFLAGS=

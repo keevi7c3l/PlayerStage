@@ -39,17 +39,14 @@ void setObst(double x, double y) {
 
 void LaserReader::readLaser() {
     playerc_client_read(client);
-    double x, y, angle, dist, robAng, xPos, yPos;
+    double x, y, angle, dist;
 
     for (int i = 0; i < laser->scan_count; i++) {
-        robAng = position2d->pa;
-        xPos = position2d->px;
-        yPos = position2d->py;
         dist = laser->ranges[i];
-        angle = robAng + DTOR(i - 90);
+        angle = position2d->pa + DTOR(i - 90);
 
-        y = yPos + (sin(angle) * dist);
-        x = xPos + (cos(angle) * dist);
+        y = position2d->py + (sin(angle) * dist);
+        x = position2d->px + (cos(angle) * dist);
 
         if (x<-X_BOUND - 0.5 || x > X_BOUND + 0.5 || y<-Y_BOUND - 0.5 || y > Y_BOUND + 0.5) {
             printf("Out of Map: (%f,%f)\n", x, y);
