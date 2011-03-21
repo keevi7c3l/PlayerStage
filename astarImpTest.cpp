@@ -54,7 +54,7 @@ float getHeuCost(int x, int y, int tx, int ty) {
     float dx = tx - x;
     float dy = ty - y;
 
-    return (sqrt((dx * dx)+(dy * dy)));
+    return sqrt((dx * dx)+(dy * dy));
 }
 
 bool inList(list<Node> &list, Node &node) {
@@ -68,7 +68,6 @@ bool inList(list<Node> &list, Node &node) {
 }
 
 bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
-
     list<Node> closed;
     list<Node> open;
     int maxDepth = 0;
@@ -81,7 +80,6 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
 
     open.push_back(nodes[sx][sy]);
     nodes[sx][sy].inOpen = true;
-
     nodes[tx][ty].parent = NULL;
 
     while ((maxDepth < MAX_DIST) && (open.size() != 0)) {
