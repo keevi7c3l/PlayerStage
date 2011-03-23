@@ -22,6 +22,13 @@ extern int isObst(int x, int y) {
     return true;
 }
 
+extern int isSeen(int x, int y) {
+    if (x >= 0 && x < MAPSIZE_X && y >= 0 && y < MAPSIZE_X) {
+        return seen[x][y];
+    }
+    return true;
+}
+
 void setObst(double x, double y) {
     // add 0.2 padding
     for (double i = -PADDING; i <= PADDING; i += (1.0 / SCALE)) {
@@ -34,6 +41,16 @@ void setObst(double x, double y) {
                 obstacle[newX][newY] = true;
             }
         }
+    }
+}
+
+void setSeen(double robX, double robY, double dist, double angle) {
+    double x, y;
+    while (dist >= 0) {
+        x = robX + (cos(angle) * dist);
+        y = robY + (sin(angle) * dist);
+        seen[getMatrixValue(x)][getMatrixValue(y)] = true;
+        dist -= (1.0 / SCALE);
     }
 }
 
@@ -53,5 +70,6 @@ void LaserReader::readLaser() {
         } else if (dist < laser->max_range) {
             setObst(x, y);
         }
+        setSeen(position2d->px, position2d->py, dist, angle);
     }
 }
