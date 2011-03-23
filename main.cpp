@@ -75,11 +75,11 @@ int init() {
     }
 
     /* Graphics2d */
-    gfx = playerc_graphics2d_create(client, 0);
-    if (playerc_graphics2d_subscribe(gfx, PLAYERC_OPEN_MODE) != 0) {
-        fprintf(stderr, "error: %s\n", playerc_error_str());
-        return -1;
-    }
+//    gfx = playerc_graphics2d_create(client, 0);
+//    if (playerc_graphics2d_subscribe(gfx, PLAYERC_OPEN_MODE) != 0) {
+//        fprintf(stderr, "error: %s\n", playerc_error_str());
+//        return -1;
+//    }
 
     if (playerc_client_datamode(client, PLAYERC_DATAMODE_PULL) != 0) {
         fprintf(stderr, "error: %s\n", playerc_error_str());
@@ -202,29 +202,35 @@ int main() {
 
     cout << "Creating LaserReader" << endl;
     lr = new LaserReader(client, laser, position2d);
+    lr->readLaser();
+    printf("Current position is: %f,%f\n", position2d->px, position2d->py);
 
     cout << "Starting Main Loop" << endl;
     while (true) {
         lr->readLaser();
 
         player_pose2d_t nextDest = findClosest(position2d->px, position2d->py);
-        printf("Next goal is: (%f, %f)\n", nextDest.px, nextDest.py);
+        printf("Looking for path between: (%f, %f) and (%f, %f)\n", position2d->px, position2d->py, nextDest.px, nextDest.py);
 
         while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
+            // while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
             cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
             playerc_client_read(client);
+            setSeen(nextDest.px, nextDest.py);
+            break;
         }
 
-        printPath();
+        //printPath();
+        if (path.size() > 2) path.pop_back();
         path.pop_back(); // popping origin
         player_pose2d_t nextPoint = path.back();
-        
+
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
         playerc_position2d_set_cmd_pose(position2d, nextPoint.px, nextPoint.py, 0, position2d->pa);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
             //drawMap();
-            //drawInternalMap();
+            drawInternalMap();
         }
     }
 

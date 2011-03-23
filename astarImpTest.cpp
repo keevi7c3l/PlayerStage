@@ -80,7 +80,10 @@ player_pose2d_t findClosest(double currX, double currY) {
     Path *mainPath = new Path(0, 0, 1000000);
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (!isSeen(i, j) && i != x && j != y) {
+            if (getCoorValue(i) <= -7.9 || getCoorValue(i) >= 7.9 || getCoorValue(j) <= -7.9 || getCoorValue(j) >= 7.9) { //hack
+                continue;
+            }
+            if (!isSeen(i, j) && i != x && j != y && !isObst(i, j)) {
                 double currentHeu = getHeuCost(x, y, i, j);
                 if (currentHeu < mainPath->cost) {
                     mainPath->x = i;

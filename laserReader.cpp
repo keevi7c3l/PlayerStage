@@ -58,6 +58,14 @@ void setSeen(double robX, double robY, double dist, double angle) {
     }
 }
 
+void setSeen(double x, double y) {
+    int newX = getMatrixValue(x);
+    int newY = getMatrixValue(y);
+    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+        seen[newX][newY] = true;
+    }
+}
+
 void LaserReader::readLaser() {
     playerc_client_read(client);
     double x, y, angle, dist;

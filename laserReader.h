@@ -30,6 +30,7 @@ private:
 
 extern int isObst(int x, int y);
 extern int isSeen(int x, int y);
+void setSeen(double x, double y);
 extern int getMatrixValue(double i);
 extern double getCoorValue(int i);
 
