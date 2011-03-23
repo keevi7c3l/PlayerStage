@@ -49,7 +49,11 @@ void setSeen(double robX, double robY, double dist, double angle) {
     while (dist >= 0) {
         x = robX + (cos(angle) * dist);
         y = robY + (sin(angle) * dist);
-        seen[getMatrixValue(x)][getMatrixValue(y)] = true;
+        int newX = getMatrixValue(x);
+        int newY = getMatrixValue(y);
+        if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+            seen[newX][newY] = true;
+        }
         dist -= (1.0 / SCALE);
     }
 }

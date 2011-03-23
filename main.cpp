@@ -204,23 +204,27 @@ int main() {
     lr = new LaserReader(client, laser, position2d);
 
     cout << "Starting Main Loop" << endl;
-    while (!isArrived(X_GOAL, Y_GOAL)) {
+    while (true) {
         lr->readLaser();
-        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(X_GOAL), getMatrixValue(Y_GOAL), &path)) {
-            cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << X_GOAL << ", " << Y_GOAL << ")" << endl;
+
+        player_pose2d_t nextDest = findClosest(position2d->px, position2d->py);
+        printf("Next goal is: (%f, %f)\n", nextDest.px, nextDest.py);
+
+        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
+            cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
             playerc_client_read(client);
         }
-        // std::vector<player_pose2d_t> newPath = calcChange();
-        // player_pose2d_t next = newPath.back();
-        path.pop_back();
-        path.pop_back();
-        player_pose2d_t next = path.back();
-        cout << "Going to:" << "(" << next.px << ", " << next.py << ")" << endl;
-        playerc_position2d_set_cmd_pose(position2d, next.px, next.py, 0, position2d->pa);
-        while (!isArrived(next.px, next.py)) {
+
+        printPath();
+        path.pop_back(); // popping origin
+        player_pose2d_t nextPoint = path.back();
+        
+        cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
+        playerc_position2d_set_cmd_pose(position2d, nextPoint.px, nextPoint.py, 0, position2d->pa);
+        while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
             //drawMap();
-            drawInternalMap();
+            //drawInternalMap();
         }
     }
 

@@ -67,6 +67,37 @@ bool inList(list<Node> &list, Node &node) {
     return false;
 }
 
+Path::Path(int x, int y, double cost) : x(x), y(y), cost(cost) {
+
+}
+
+player_pose2d_t findClosest(double currX, double currY) {
+    cout << "Starting findclosest" << endl;
+    int x = getMatrixValue(currX);
+    int y = getMatrixValue(currY);
+
+    int counter = 0;
+    Path *mainPath = new Path(0, 0, 1000000);
+    for (int i = 0; i < MAPSIZE_X; i++) {
+        for (int j = 0; j < MAPSIZE_Y; j++) {
+            if (!isSeen(i, j) && i != x && j != y) {
+                double currentHeu = getHeuCost(x, y, i, j);
+                if (currentHeu < mainPath->cost) {
+                    mainPath->x = i;
+                    mainPath->y = j;
+                    mainPath->cost = currentHeu;
+                }
+            }
+        }
+    }
+    player_pose2d_t path;
+    path.px = getCoorValue(mainPath->x);
+    path.py = getCoorValue(mainPath->y);
+    free(mainPath);
+    printf("Closest path is: (%f, %f)\n", path.px, path.py);
+    return path;
+}
+
 bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     list<Node> closed;
     list<Node> open;

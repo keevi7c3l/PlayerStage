@@ -31,11 +31,12 @@ public:
 class Path {
 public:
     int x, y;
-
-    Path(int x, int y);
+    double cost;
+    Path(int x, int y, double cost);
 };
 
 bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
+player_pose2d_t findClosest(double currX, double currY);
 
 static Node nodes[MAPSIZE_X][MAPSIZE_Y];
 static bool visited[MAPSIZE_X][MAPSIZE_Y] = {false};
