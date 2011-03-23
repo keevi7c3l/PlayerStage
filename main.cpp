@@ -230,7 +230,7 @@ int main() {
 
 
     cout << "Arrived at Destination" << endl;
-    // cvSaveImage("mappppa.jpg", image, 0);
+    //cvSaveImage("mappppa.jpg", image, 0);
 
     //Disconnect player
     playerc_laser_unsubscribe(laser);
