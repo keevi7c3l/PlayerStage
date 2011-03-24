@@ -32,15 +32,11 @@ int Node::setParent(Node *par) {
     return depth;
 }
 
-bool blocked(int x, int y) {
-    return isObst(x, y);
-}
-
 bool isValidLocation(int sx, int sy, int x, int y) {
     bool invalid = (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y);
 
     if ((!invalid) && ((sx != x) || (sy != y))) {
-        invalid = blocked(x, y);
+        invalid = isObst(x, y);
     }
 
     return !invalid;
@@ -170,6 +166,7 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
         return false;
     }
 
+    path->clear();
     Node *target = &nodes[tx][ty];
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 

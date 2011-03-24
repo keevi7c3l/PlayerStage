@@ -14,7 +14,6 @@ using namespace std;
 playerc_client_t *client;
 playerc_laser_t *laser;
 playerc_position2d_t *position2d;
-playerc_graphics2d_t *gfx;
 
 vector<player_pose2d_t> path;
 LaserReader *lr;
@@ -74,13 +73,6 @@ int init() {
         return -1;
     }
 
-    /* Graphics2d */
-//    gfx = playerc_graphics2d_create(client, 0);
-//    if (playerc_graphics2d_subscribe(gfx, PLAYERC_OPEN_MODE) != 0) {
-//        fprintf(stderr, "error: %s\n", playerc_error_str());
-//        return -1;
-//    }
-
     if (playerc_client_datamode(client, PLAYERC_DATAMODE_PULL) != 0) {
         fprintf(stderr, "error: %s\n", playerc_error_str());
         return -1;
@@ -131,8 +123,26 @@ void drawMap() {
     }
 }
 
+void drawPath() {
+    if (!isIntMap) intMapInit();
+    CvPoint first, second;
+    std::vector<player_pose2d_t>::iterator it = path.end();
+    while (it > path.begin() + 1) {
+        first.x = it->px * 10 + 80;
+        first.y = it->py * 10 + 80;
+        it--;
+        second.x = it->px * 10 + 80;
+        second.y = it->py * 10 + 80;
+        it--;
+        cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
+    }
+    cvShowImage(internal_window_name, image);
+    cvWaitKey(10);
+}
+
 void drawInternalMap() {
     if (!isIntMap) intMapInit();
+    cvSet(internalImage, bckgrndCol);
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
             if (isObst(x, y)) {
@@ -147,25 +157,10 @@ void drawInternalMap() {
             }
         }
     }
+    drawPath();
+    cvFlip(internalImage, NULL, 0);
     cvShowImage(internal_window_name, internalImage);
     cvWaitKey(10);
-}
-
-void drawPathOnMapBroken() {
-    player_point_2d line[path.size()];
-    double xPos = ((int) (position2d->px * SCALE)) / (double) SCALE;
-    double yPos = ((int) (position2d->px * SCALE)) / (double) SCALE;
-    std::vector<player_pose2d_t>::iterator it = path.end();
-    int i = path.size() - 1;
-    int j = 0;
-    while (it != path.begin()) {
-        line[j].px = path[i].px - xPos;
-        line[j].py = path[i].py - yPos;
-        it--;
-        i--;
-        j++;
-    }
-    playerc_graphics2d_draw_polyline(gfx, line, path.size() - 1);
 }
 
 std::vector<player_pose2d_t> calcChange() {
@@ -212,15 +207,15 @@ int main() {
         player_pose2d_t nextDest = findClosest(position2d->px, position2d->py);
         printf("Looking for path between: (%f, %f) and (%f, %f)\n", position2d->px, position2d->py, nextDest.px, nextDest.py);
 
-        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
-            // while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
+        //while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
+        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
             cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
             playerc_client_read(client);
             setSeen(nextDest.px, nextDest.py);
             break;
         }
 
-        //printPath();
+        if (path.empty()) continue;
         if (path.size() > 2) path.pop_back();
         path.pop_back(); // popping origin
         player_pose2d_t nextPoint = path.back();
