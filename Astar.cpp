@@ -1,4 +1,4 @@
-#include "astarImpTest.h"
+#include "Astar.h"
 
 bool Astar::isValidLocation(int sx, int sy, int x, int y) {
     bool invalid = (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y);

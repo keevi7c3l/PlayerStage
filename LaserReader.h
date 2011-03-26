@@ -1,3 +1,19 @@
+/*
+ * File:   LaserReader.h
+ * Author: Pit Apps
+ *
+ * Created on March 26, 2011, 4:43 PM
+ *
+ * This Class deals with creating an internal map of the environment in real
+ * time using the laser data.
+ *
+ * It puts a virtual grid on the map (whose realitve coordinates are calculated
+ * using the getMatrixValue and getCoorValue methods).
+ * 
+ * It stores the known obstacles in the obstacle array and the known seen points
+ * in the seen array.
+ */
+
 #ifndef LASERREADER_H
 #define	LASERREADER_H
 #include <libplayerc/playerc.h>

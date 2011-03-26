@@ -1,15 +1,17 @@
 /* 
  * File:   Mapper.h
- * Author: koy
+ * Author: Pit Apps
  *
  * Created on March 26, 2011, 4:43 PM
+ *
+ * This Class deals with creating a human-readable Map using OpenCV.
  */
 
 #ifndef MAPPER_H
 #define	MAPPER_H
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include "laserReader.h"
+#include "LaserReader.h"
 #include "PlayerWrapper.h"
 
 class Mapper {

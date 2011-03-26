@@ -1,4 +1,4 @@
-#include "laserReader.h"
+#include "LaserReader.h"
 
 int LaserReader::getMatrixValue(double i) {
     return (int) ((i + X_BOUND) * SCALE); // relying on X and Y bound being the same

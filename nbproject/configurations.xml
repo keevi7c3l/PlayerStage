@@ -5,10 +5,10 @@
                    displayName="Header Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
+      <itemPath>Astar.h</itemPath>
+      <itemPath>LaserReader.h</itemPath>
       <itemPath>Mapper.h</itemPath>
       <itemPath>PlayerWrapper.h</itemPath>
-      <itemPath>astarImpTest.h</itemPath>
-      <itemPath>laserReader.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
                    displayName="Resource Files"
@@ -19,10 +19,10 @@
                    displayName="Source Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
+      <itemPath>Astar.cpp</itemPath>
+      <itemPath>LaserReader.cpp</itemPath>
       <itemPath>Mapper.cpp</itemPath>
       <itemPath>PlayerWrapper.cpp</itemPath>
-      <itemPath>astarImpTest.cpp</itemPath>
-      <itemPath>laserReader.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>
     <logicalFolder name="TestFiles"

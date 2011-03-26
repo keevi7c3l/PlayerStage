@@ -35,8 +35,8 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/PlayerWrapper.o \
-	${OBJECTDIR}/laserReader.o \
-	${OBJECTDIR}/astarImpTest.o \
+	${OBJECTDIR}/LaserReader.o \
+	${OBJECTDIR}/Astar.o \
 	${OBJECTDIR}/Mapper.o
 
 
@@ -74,15 +74,15 @@ ${OBJECTDIR}/PlayerWrapper.o: PlayerWrapper.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
 
-${OBJECTDIR}/laserReader.o: laserReader.cpp 
+${OBJECTDIR}/LaserReader.o: LaserReader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/laserReader.o laserReader.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/LaserReader.o LaserReader.cpp
 
-${OBJECTDIR}/astarImpTest.o: astarImpTest.cpp 
+${OBJECTDIR}/Astar.o: Astar.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/astarImpTest.o astarImpTest.cpp
+	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Astar.o Astar.cpp
 
 ${OBJECTDIR}/Mapper.o: Mapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}

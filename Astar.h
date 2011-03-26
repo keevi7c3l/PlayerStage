@@ -1,8 +1,19 @@
+/*
+ * File:   Astar.h
+ * Author: Pit Apps
+ *
+ * Created on March 26, 2011, 4:43 PM
+ *
+ * This Class Calculates the next best path using the A* algorithm.
+ * The findPath method computes the next best goal to go to by looking at the
+ * closest unseen points.
+ */
+
 #ifndef ASTARIMPSEARCH_H
 #define	ASTARIMPSEARCH_H
 #include <list>
 #include <vector>
-#include "laserReader.h"
+#include "LaserReader.h"
 
 #define MAX_DIST 10000
 

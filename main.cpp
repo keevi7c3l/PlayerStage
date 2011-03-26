@@ -1,5 +1,5 @@
-#include "laserReader.h"
-#include "astarImpTest.h"
+#include "LaserReader.h"
+#include "Astar.h"
 #include "PlayerWrapper.h"
 #include "Mapper.h"
 
