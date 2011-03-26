@@ -1,6 +1,7 @@
 #ifndef LASERREADER_H
 #define	LASERREADER_H
 #include <libplayerc/playerc.h>
+#include "PlayerWrapper.h"
 
 #define X_BOUND 12 // For building3
 #define Y_BOUND 12
@@ -11,14 +12,10 @@
 
 class LaserReader {
 public:
-    LaserReader(playerc_client_t *client,
-            playerc_laser_t *laser,
-            playerc_position2d_t *position2d);
+    LaserReader(PlayerWrapper *pw);
     void readLaser();
 private:
-    playerc_client_t *client;
-    playerc_laser_t *laser;
-    playerc_position2d_t *position2d;
+    PlayerWrapper *pw;
 };
 
 extern int isObst(int x, int y);

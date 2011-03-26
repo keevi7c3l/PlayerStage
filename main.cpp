@@ -4,12 +4,11 @@
 #include <opencv/highgui.h>
 #include "laserReader.h"
 #include "astarImpTest.h"
+#include "PlayerWrapper.h"
 
 using namespace std;
 
-playerc_client_t *client;
-playerc_laser_t *laser;
-playerc_position2d_t *position2d;
+PlayerWrapper *pw;
 
 vector<player_pose2d_t> path;
 LaserReader *lr;
@@ -31,8 +30,8 @@ char internal_window_name[] = "Internal Map";
 IplImage* internalImage = cvCreateImage(cvSize(width, height), 8, 3);
 
 bool isArrived(double tx, double ty) {
-    playerc_client_read(client);
-    return ((abs(position2d->px - tx) <= 0.15) && (abs(position2d->py - ty) <= 0.15));
+    pw->readClient();
+    return ((abs(pw->getRobX() - tx) <= 0.15) && (abs(pw->getRobY() - ty) <= 0.15));
 }
 
 void printPath() {
@@ -49,41 +48,6 @@ int floatToInt(float num) {
     temp = temp % 10;
     if (temp >= 5) return (int) ((num * 10) + 1);
     else return (int) (num * 10);
-}
-
-int init() {
-    /* Set up player/stage connectivity*/
-    client = playerc_client_create(NULL, "localhost", 6665);
-    if (playerc_client_connect(client) != 0)
-        return -1;
-
-    /* Set up laser connectivity*/
-    laser = playerc_laser_create(client, 0);
-    if (playerc_laser_subscribe(laser, PLAYERC_OPEN_MODE))
-        return -1;
-
-    /* Set up position2d connectivity*/
-    position2d = playerc_position2d_create(client, 0);
-    if (playerc_position2d_subscribe(position2d, PLAYERC_OPEN_MODE) != 0) {
-        fprintf(stderr, "error: %s\n", playerc_error_str());
-        return -1;
-    }
-
-    if (playerc_client_datamode(client, PLAYERC_DATAMODE_PULL) != 0) {
-        fprintf(stderr, "error: %s\n", playerc_error_str());
-        return -1;
-    }
-
-    if (playerc_client_set_replace_rule(client, -1, -1, PLAYER_MSGTYPE_DATA, -1, 1) != 0) {
-        fprintf(stderr, "error: %s\n", playerc_error_str());
-        return -1;
-    }
-
-    playerc_position2d_enable(position2d, 1);
-    playerc_position2d_set_odom(position2d, 0, 0, 0);
-    playerc_client_read(client);
-
-    return 0;
 }
 
 void mapInit() {
@@ -103,12 +67,12 @@ void intMapInit() {
 void drawMap() {
     if (!isMap) mapInit();
     float dist, angle;
-    for (int i = 0; i < laser->scan_count; i++) {
-        dist = laser->ranges[i];
-        if (dist < laser->max_range) {
-            angle = (1.5 * M_PI) + DTOR(i) + position2d->pa;
-            pt1.y = (centreY - floatToInt(position2d->py));
-            pt1.x = (centreX + floatToInt(position2d->px));
+    for (int i = 0; i < pw->getLaserCount(); i++) {
+        dist = pw->getRange(i);
+        if (dist < pw->getMaxRange()) {
+            angle = (1.5 * M_PI) + DTOR(i) + pw->getRobA();
+            pt1.x = (centreX + floatToInt(pw->getRobX()));
+            pt1.y = (centreY - floatToInt(pw->getRobY()));
             pt.y = (int) (pt1.y - (sin(angle) * dist * 10));
             pt.x = (int) (pt1.x + (cos(angle) * dist * 10));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
@@ -190,24 +154,24 @@ player_pose2d_t calcChange() {
 int main() {
 
     cout << "Starting up robot" << endl;
-    if (init() == -1) return -1;
+    pw = new PlayerWrapper(6665);
 
     cout << "Creating LaserReader" << endl;
-    lr = new LaserReader(client, laser, position2d);
+    lr = new LaserReader(pw);
     lr->readLaser();
-    printf("Current position is: %f,%f\n", position2d->px, position2d->py);
+    printf("Current position is: %f,%f\n", pw->getRobX(), pw->getRobY());
 
     cout << "Starting Main Loop" << endl;
     while (true) {
         lr->readLaser();
 
-        player_pose2d_t nextDest = findClosest(position2d->px, position2d->py);
-        printf("Looking for path between: (%f, %f) and (%f, %f)\n", position2d->px, position2d->py, nextDest.px, nextDest.py);
+        player_pose2d_t nextDest = findClosest(pw->getRobX(), pw->getRobY());
+        printf("Looking for path between: (%f, %f) and (%f, %f)\n", pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py);
 
-        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
+        while (!findPath(getMatrixValue(pw->getRobX()), getMatrixValue(pw->getRobY()), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
             //while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
-            cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
-            playerc_client_read(client);
+            cout << "No Path found from " << "(" << pw->getRobX() << ", " << pw->getRobY() << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
+            pw->readClient();
             setSeen(nextDest.px, nextDest.py);
             break;
         }
@@ -215,7 +179,7 @@ int main() {
         player_pose2d_t nextPoint = calcChange();
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
-        playerc_position2d_set_cmd_pose(position2d, nextPoint.px, nextPoint.py, 0, position2d->pa);
+        pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
             drawInternalMap();
@@ -228,10 +192,7 @@ int main() {
     //cvSaveImage("mappppa.jpg", image, 0);
 
     //Disconnect player
-    playerc_laser_unsubscribe(laser);
-    playerc_laser_destroy(laser);
-    playerc_client_disconnect(client);
-    playerc_client_destroy(client);
+    delete pw;
 
     return 0;
 }

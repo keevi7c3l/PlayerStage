@@ -24,7 +24,7 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 
 
 # Project Name
-PROJECTNAME=playerstage
+PROJECTNAME=playerstage_Classed
 
 # Active Configuration
 DEFAULTCONF=Debug

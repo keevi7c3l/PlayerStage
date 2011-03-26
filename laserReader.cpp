@@ -2,9 +2,7 @@
 #include <cmath>
 #include "laserReader.h"
 
-LaserReader::LaserReader(playerc_client_t *client,
-                         playerc_laser_t *laser,
-                         playerc_position2d_t *position2d) : client(client), laser(laser), position2d(position2d) {
+LaserReader::LaserReader(PlayerWrapper *pw) : pw(pw) {
 }
 
 extern int getMatrixValue(double i) {
@@ -67,21 +65,21 @@ void setSeen(double x, double y) {
 }
 
 void LaserReader::readLaser() {
-    playerc_client_read(client);
+    pw->readClient();
     double x, y, angle, dist;
 
-    for (int i = 0; i < laser->scan_count; i++) {
-        dist = laser->ranges[i];
-        angle = position2d->pa + DTOR(i - 180);
+    for (int i = 0; i < pw->getLaserCount(); i++) {
+        dist = pw->getRange(i);
+        angle = pw->getRobA() + DTOR(i - 180);
 
-        y = position2d->py + (sin(angle) * dist);
-        x = position2d->px + (cos(angle) * dist);
-
+        x = pw->getRobX() + (cos(angle) * dist);
+        y = pw->getRobY() + (sin(angle) * dist);
+        
         if (x<-X_BOUND - 0.5 || x > X_BOUND + 0.5 || y<-Y_BOUND - 0.5 || y > Y_BOUND + 0.5) {
             printf("Out of Map: (%f,%f)\n", x, y);
-        } else if (dist < laser->max_range) {
+        } else if (dist < pw->getMaxRange()) {
             setObst(x, y);
         }
-        setSeen(position2d->px, position2d->py, dist, angle);
+        setSeen(pw->getRobX(), pw->getRobY(), dist, angle);
     }
 }
