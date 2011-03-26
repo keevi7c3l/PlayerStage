@@ -4,7 +4,6 @@
 #include "astarImpTest.h"
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
-#include <fstream>
 
 using namespace std;
 
@@ -125,11 +124,11 @@ void drawPath() {
     CvPoint first, second;
     std::vector<player_pose2d_t>::iterator it = path.end();
     while (it > path.begin() + 1) {
-        first.x = it->px * 10 + X_BOUND*10;
-        first.y = it->py * 10 + Y_BOUND*10;
+        first.x = it->px * 10 + X_BOUND * 10;
+        first.y = it->py * 10 + Y_BOUND * 10;
         it--;
-        second.x = it->px * 10 + X_BOUND*10;
-        second.y = it->py * 10 + Y_BOUND*10;
+        second.x = it->px * 10 + X_BOUND * 10;
+        second.y = it->py * 10 + Y_BOUND * 10;
         it--;
         cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
     }
@@ -143,13 +142,13 @@ void drawInternalMap() {
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
             if (isSeen(x, y)) {
-                pt.x = (getCoorValue(x)*10 + X_BOUND*10);
-                pt.y = (getCoorValue(y)*10 + Y_BOUND*10);
+                pt.x = (getCoorValue(x)*10 + X_BOUND * 10);
+                pt.y = (getCoorValue(y)*10 + Y_BOUND * 10);
                 cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
             }
             if (isObst(x, y)) {
-                pt.x = (getCoorValue(x)*10 + X_BOUND*10);
-                pt.y = (getCoorValue(y)*10 + Y_BOUND*10);
+                pt.x = (getCoorValue(x)*10 + X_BOUND * 10);
+                pt.y = (getCoorValue(y)*10 + Y_BOUND * 10);
                 cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
             }
         }
@@ -159,6 +158,7 @@ void drawInternalMap() {
     cvShowImage(internal_window_name, internalImage);
     cvWaitKey(10);
 }
+
 player_pose2d_t calcChange() {
     double deltaX, deltaY;
     double deltas = 0;
@@ -212,19 +212,14 @@ int main() {
             break;
         }
 
-        //if (path.empty()) continue;
-        //if (path.size() > 2) path.pop_back();
-        // path.pop_back(); // popping origin
-        // player_pose2d_t nextPoint = path.back();
-
         player_pose2d_t nextPoint = calcChange();
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
         playerc_position2d_set_cmd_pose(position2d, nextPoint.px, nextPoint.py, 0, position2d->pa);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
-            //drawMap();
             drawInternalMap();
+            //drawMap();
         }
     }
 
