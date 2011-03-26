@@ -1,6 +1,6 @@
 #include <libplayerc/playerc.h>
-#include "laserReader.h"
 #include <cmath>
+#include "laserReader.h"
 
 LaserReader::LaserReader(playerc_client_t *client,
                          playerc_laser_t *laser,

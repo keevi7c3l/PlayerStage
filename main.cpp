@@ -1,9 +1,9 @@
 #include <iostream>
 #include <cmath>
-#include "laserReader.h"
-#include "astarImpTest.h"
 #include <opencv/cv.h>
 #include <opencv/highgui.h>
+#include "laserReader.h"
+#include "astarImpTest.h"
 
 using namespace std;
 
