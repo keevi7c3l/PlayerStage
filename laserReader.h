@@ -2,8 +2,8 @@
 #define	LASERREADER_H
 #include <libplayerc/playerc.h>
 
-#define X_BOUND 9
-#define Y_BOUND 9
+#define X_BOUND 12 // For building3
+#define Y_BOUND 12
 #define SCALE 10
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (X_BOUND*2*SCALE)

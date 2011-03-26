@@ -83,7 +83,7 @@ player_pose2d_t findClosest(double currX, double currY) {
     Path *mainPath = new Path(0, 0, 1000000);
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (getCoorValue(i) <= -7.9 || getCoorValue(i) >= 7.9 || getCoorValue(j) <= -7.9 || getCoorValue(j) >= 7.9) { //hack
+            if (getCoorValue(i) <= -(X_BOUND - 0.2) || getCoorValue(i) >= (X_BOUND - 0.2) || getCoorValue(j) <= -(Y_BOUND - 0.2) || getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack
                 continue;
             }
             if (!isSeen(i, j) && i != x && j != y && !isObst(i, j)) {
@@ -200,6 +200,5 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     path->push_back((player_pose2d_t) {
                     getCoorValue((double) sx), getCoorValue((double) sy), 0.0
     });
-    printf("Findpath returning true\n");
     return true;
 }

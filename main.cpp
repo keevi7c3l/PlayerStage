@@ -6,9 +6,6 @@
 #include <opencv/highgui.h>
 #include <fstream>
 
-#define X_GOAL 8
-#define Y_GOAL 8
-
 using namespace std;
 
 playerc_client_t *client;
@@ -128,11 +125,11 @@ void drawPath() {
     CvPoint first, second;
     std::vector<player_pose2d_t>::iterator it = path.end();
     while (it > path.begin() + 1) {
-        first.x = it->px * 10 + 80;
-        first.y = it->py * 10 + 80;
+        first.x = it->px * 10 + X_BOUND*10;
+        first.y = it->py * 10 + Y_BOUND*10;
         it--;
-        second.x = it->px * 10 + 80;
-        second.y = it->py * 10 + 80;
+        second.x = it->px * 10 + X_BOUND*10;
+        second.y = it->py * 10 + Y_BOUND*10;
         it--;
         cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
     }
@@ -146,13 +143,13 @@ void drawInternalMap() {
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
             if (isSeen(x, y)) {
-                pt.x = (getCoorValue(x)*10 + 80);
-                pt.y = (getCoorValue(y)*10 + 80);
+                pt.x = (getCoorValue(x)*10 + X_BOUND*10);
+                pt.y = (getCoorValue(y)*10 + Y_BOUND*10);
                 cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
             }
             if (isObst(x, y)) {
-                pt.x = (getCoorValue(x)*10 + 80);
-                pt.y = (getCoorValue(y)*10 + 80);
+                pt.x = (getCoorValue(x)*10 + X_BOUND*10);
+                pt.y = (getCoorValue(y)*10 + Y_BOUND*10);
                 cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
             }
         }
@@ -162,11 +159,10 @@ void drawInternalMap() {
     cvShowImage(internal_window_name, internalImage);
     cvWaitKey(10);
 }
-
-std::vector<player_pose2d_t> calcChange() {
+player_pose2d_t calcChange() {
     double deltaX, deltaY;
     double deltas = 0;
-    std::vector<player_pose2d_t> newPath;
+    int counter = 0;
     std::vector<player_pose2d_t>::iterator it = path.end();
     int i = path.size() - 2;
     while (it != path.begin()) {
@@ -175,19 +171,20 @@ std::vector<player_pose2d_t> calcChange() {
         deltaX = abs(thisPose.px - lastPose.px);
         deltaY = abs(thisPose.py - lastPose.py);
         double newDeltas = deltaX + deltaY;
-        if (newDeltas != deltas) {
-            newPath.push_back(path[i + 1]);
+        if (newDeltas != deltas && counter > 2) {
+            printf("Returining Path: %f, %f\n", path[i + 1].px, path[i + 1].py);
+            return path[i + 1];
         }
         deltas = newDeltas;
         float dx = path[i].px - path[path.size() - 1].px;
         float dy = path[i].py - path[path.size() - 1].py;
         if (sqrt((dx * dx)+(dy * dy)) > 1) {
-            break;
+            return path[i + 1];
         }
         it--;
         i--;
+        counter++;
     }
-    return newPath;
 }
 
 int main() {
@@ -207,18 +204,20 @@ int main() {
         player_pose2d_t nextDest = findClosest(position2d->px, position2d->py);
         printf("Looking for path between: (%f, %f) and (%f, %f)\n", position2d->px, position2d->py, nextDest.px, nextDest.py);
 
-        //while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
-        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
+        while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(nextDest.px), getMatrixValue(nextDest.py), &path)) {
+            //while (!findPath(getMatrixValue(position2d->px), getMatrixValue(position2d->py), getMatrixValue(8), getMatrixValue(8), &path)) {
             cout << "No Path found from " << "(" << position2d->px << ", " << position2d->py << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
             playerc_client_read(client);
             setSeen(nextDest.px, nextDest.py);
             break;
         }
 
-        if (path.empty()) continue;
-        if (path.size() > 2) path.pop_back();
-        path.pop_back(); // popping origin
-        player_pose2d_t nextPoint = path.back();
+        //if (path.empty()) continue;
+        //if (path.size() > 2) path.pop_back();
+        // path.pop_back(); // popping origin
+        // player_pose2d_t nextPoint = path.back();
+
+        player_pose2d_t nextPoint = calcChange();
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
         playerc_position2d_set_cmd_pose(position2d, nextPoint.px, nextPoint.py, 0, position2d->pa);
