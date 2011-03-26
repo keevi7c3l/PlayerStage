@@ -36,7 +36,8 @@ OBJECTFILES= \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/PlayerWrapper.o \
 	${OBJECTDIR}/laserReader.o \
-	${OBJECTDIR}/astarImpTest.o
+	${OBJECTDIR}/astarImpTest.o \
+	${OBJECTDIR}/Mapper.o
 
 
 # C Compiler Flags
@@ -82,6 +83,11 @@ ${OBJECTDIR}/astarImpTest.o: astarImpTest.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/astarImpTest.o astarImpTest.cpp
+
+${OBJECTDIR}/Mapper.o: Mapper.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapper.o Mapper.cpp
 
 # Subprojects
 .build-subprojects:

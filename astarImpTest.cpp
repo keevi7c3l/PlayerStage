@@ -1,55 +1,21 @@
 #include "astarImpTest.h"
-#include <iostream>
 
-static Node nodes[MAPSIZE_X][MAPSIZE_Y];
-static bool visited[MAPSIZE_X][MAPSIZE_Y] = {false};
-
-Node::Node() {
-}
-
-Node::Node(int x, int y) : x(x), y(y), inOpen(false), inClosed(false), cost(0), heuristic(0), depth(0) {
-};
-
-bool Node::operator<(const Node& other) {
-    float f = other.heuristic + other.cost;
-    float of = this->heuristic + this->cost;
-    if (f > of) {
-        return true;
-    } else if (f < of) {
-        return false;
-    } else {
-        return 0;
-    }
-}
-
-bool Node::operator==(const Node& other) const {
-    if ((other.x == this->x) && (other.y == this->y)) {
-        return true;
-    }
-    return false;
-}
-
-int Node::setParent(Node *par) {
-    depth = par->depth + 1;
-    this->parent = par;
-    return depth;
-}
-
-bool isValidLocation(int sx, int sy, int x, int y) {
+bool Astar::isValidLocation(int sx, int sy, int x, int y) {
     bool invalid = (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y);
 
     if ((!invalid) && ((sx != x) || (sy != y))) {
-        invalid = isObst(x, y);
+        invalid = lr->isObst(x, y);
     }
 
     return !invalid;
 }
 
 double getMovCost(int currX, int currY, int x, int y) {
-    if (currX != x && currY != y)
+    if (currX != x && currY != y) {
         return 1.41; //sqrt(2)
-    else
+    } else {
         return 1.0;
+    }
 }
 
 float getHeuCost(int x, int y, int tx, int ty) {
@@ -60,7 +26,7 @@ float getHeuCost(int x, int y, int tx, int ty) {
     return hypot(tx - x, ty - y);
 }
 
-bool inList(list<Node> &list, Node &node) {
+bool inList(list<Node> &list, Node & node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
         if (i->x == node.x && i->y == node.y) {
@@ -70,23 +36,18 @@ bool inList(list<Node> &list, Node &node) {
     return false;
 }
 
-Path::Path(int x, int y, double cost) : x(x), y(y), cost(cost) {
-
+player_pose2d_t Astar::findClosest(double currX, double currY) {
+    return findClosest(lr->getMatrixValue(currX), lr->getMatrixValue(currY));
 }
 
-player_pose2d_t findClosest(double currX, double currY) {
-    cout << "Starting findclosest" << endl;
-    int x = getMatrixValue(currX);
-    int y = getMatrixValue(currY);
-
-    int counter = 0;
+player_pose2d_t Astar::findClosest(int x, int y) {
     Path *mainPath = new Path(0, 0, 1000000);
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (getCoorValue(i) <= -(X_BOUND - 0.2) || getCoorValue(i) >= (X_BOUND - 0.2) || getCoorValue(j) <= -(Y_BOUND - 0.2) || getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack
+            if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2) || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack
                 continue;
             }
-            if (!isSeen(i, j) && i != x && j != y && !isObst(i, j)) {
+            if (!lr->isSeen(i, j) && i != x && j != y && !lr->isObst(i, j)) {
                 double currentHeu = getHeuCost(x, y, i, j);
                 if (currentHeu < mainPath->cost) {
                     mainPath->x = i;
@@ -97,14 +58,18 @@ player_pose2d_t findClosest(double currX, double currY) {
         }
     }
     player_pose2d_t path;
-    path.px = getCoorValue(mainPath->x);
-    path.py = getCoorValue(mainPath->y);
+    path.px = lr->getCoorValue(mainPath->x);
+    path.py = lr->getCoorValue(mainPath->y);
     free(mainPath);
     printf("Closest path is: (%f, %f)\n", path.px, path.py);
     return path;
 }
 
-bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
+bool Astar::findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path) {
+    return findPath(lr->getMatrixValue(sx), lr->getMatrixValue(sy), lr->getMatrixValue(tx), lr->getMatrixValue(ty), path);
+}
+
+bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     printf("Findpath started\n");
     list<Node> closed;
     list<Node> open;
@@ -182,7 +147,6 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     }
     printf("Findpath while loop finished; depth: %d\n", maxDepth);
     if (nodes[tx][ty].parent == NULL) {
-        cout << "NO PATH FOUND" << endl;
         return false;
     }
 
@@ -192,13 +156,13 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
         path->push_back((player_pose2d_t) {
-                        getCoorValue((double) target->x), getCoorValue((double) target->y), 0.0
+                        lr->getCoorValue((double) target->x), lr->getCoorValue((double) target->y), 0.0
         });
         target = target->parent;
     }
 
     path->push_back((player_pose2d_t) {
-                    getCoorValue((double) sx), getCoorValue((double) sy), 0.0
+                    lr->getCoorValue((double) sx), lr->getCoorValue((double) sy), 0.0
     });
     return true;
 }

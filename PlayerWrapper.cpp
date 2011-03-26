@@ -1,10 +1,3 @@
-/*
- * File:   PlayerWrapper.cpp
- * Author: koy
- *
- * Created on February 3, 2011, 9:06 PM
- */
-
 #include "PlayerWrapper.h"
 
 PlayerWrapper::PlayerWrapper(int port) {

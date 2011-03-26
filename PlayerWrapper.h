@@ -1,18 +1,14 @@
-/*
- * File:   PlayerWrapper.h
- * Author: koy
- *
- * Created on February 3, 2011, 9:06 PM
- * This Class creates a robot using the playerc libraries and attaches
- * laser ans position2d proxies to it.
- * It also simplifies access to frequently used methods.
- */
-
 #ifndef PLAYERWRAPPER_H
 #define	PLAYERWRAPPER_H
 
 #include <iostream>
 #include <libplayerc/playerc.h>
+#define X_BOUND 12 // For building3
+#define Y_BOUND 12
+#define SCALE 10
+#define MAPSIZE_X (X_BOUND*2*SCALE)
+#define MAPSIZE_Y (Y_BOUND*2*SCALE)
+#define PADDING 0.2
 
 class PlayerWrapper {
 public:

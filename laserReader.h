@@ -1,31 +1,29 @@
 #ifndef LASERREADER_H
 #define	LASERREADER_H
 #include <libplayerc/playerc.h>
+#include <cmath>
 #include "PlayerWrapper.h"
-
-#define X_BOUND 12 // For building3
-#define Y_BOUND 12
-#define SCALE 10
-#define MAPSIZE_X (X_BOUND*2*SCALE)
-#define MAPSIZE_Y (Y_BOUND*2*SCALE)
-#define PADDING 0.2
 
 class LaserReader {
 public:
-    LaserReader(PlayerWrapper *pw);
+
+    LaserReader(PlayerWrapper *pw) : pw(pw) {
+    }
     void readLaser();
+    bool isObst(int x, int y);
+    bool isSeen(int x, int y);
+    int getMatrixValue(double i);
+    double getCoorValue(int i);
+    void setSeen(double x, double y);
 private:
     PlayerWrapper *pw;
+
+    bool obstacle[MAPSIZE_X][MAPSIZE_Y];
+    bool seen[MAPSIZE_X][MAPSIZE_Y];
+
+    void setObst(double x, double y);
+    void setSeen(double robX, double robY, double dist, double angle);
 };
-
-extern int isObst(int x, int y);
-extern int isSeen(int x, int y);
-void setSeen(double x, double y);
-extern int getMatrixValue(double i);
-extern double getCoorValue(int i);
-
-static bool obstacle[MAPSIZE_X][MAPSIZE_Y] = {false};
-static bool seen[MAPSIZE_X][MAPSIZE_Y] = {false};
 
 #endif	/* LASERREADER_H */
 
