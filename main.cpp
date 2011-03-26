@@ -145,15 +145,15 @@ void drawInternalMap() {
     cvSet(internalImage, bckgrndCol);
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
-            if (isObst(x, y)) {
-                pt.x = (getCoorValue(x)*10 + 80);
-                pt.y = (getCoorValue(y)*10 + 80);
-                cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
-            }
             if (isSeen(x, y)) {
                 pt.x = (getCoorValue(x)*10 + 80);
                 pt.y = (getCoorValue(y)*10 + 80);
                 cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
+            }
+            if (isObst(x, y)) {
+                pt.x = (getCoorValue(x)*10 + 80);
+                pt.y = (getCoorValue(y)*10 + 80);
+                cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
             }
         }
     }

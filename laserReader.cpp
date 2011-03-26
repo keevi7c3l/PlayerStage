@@ -72,7 +72,7 @@ void LaserReader::readLaser() {
 
     for (int i = 0; i < laser->scan_count; i++) {
         dist = laser->ranges[i];
-        angle = position2d->pa + DTOR(i - 90);
+        angle = position2d->pa + DTOR(i - 180);
 
         y = position2d->py + (sin(angle) * dist);
         x = position2d->px + (cos(angle) * dist);

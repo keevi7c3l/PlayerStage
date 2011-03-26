@@ -98,9 +98,12 @@ player_pose2d_t findClosest(double currX, double currY) {
 }
 
 bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
+    printf("Findpath started\n");
     list<Node> closed;
     list<Node> open;
     int maxDepth = 0;
+    open.clear();
+    closed.clear();
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
@@ -112,6 +115,7 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     nodes[sx][sy].inOpen = true;
     nodes[tx][ty].parent = NULL;
 
+    printf("Findpath while loop started\n");
     while ((maxDepth < MAX_DIST) && (open.size() != 0)) {
         Node *current = &(open.front());
         if ((current->x == nodes[tx][ty].x) && (current->y == nodes[tx][ty].y)) {
@@ -160,7 +164,7 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
             }
         }
     }
-
+    printf("Findpath while loop finished; depth: %d\n", maxDepth);
     if (nodes[tx][ty].parent == NULL) {
         cout << "NO PATH FOUND" << endl;
         return false;
@@ -168,7 +172,10 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
 
     path->clear();
     Node *target = &nodes[tx][ty];
+    printf("Findpath adding path\n");
+    int count = 0;
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
+        printf("Count: %d\n", ++count);
 
         path->push_back((player_pose2d_t) {
                         getCoorValue((double) target->x), getCoorValue((double) target->y), 0.0
@@ -179,5 +186,6 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     path->push_back((player_pose2d_t) {
                     getCoorValue((double) sx), getCoorValue((double) sy), 0.0
     });
+    printf("Findpath returning true\n");
     return true;
 }
