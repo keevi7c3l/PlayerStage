@@ -95,7 +95,7 @@ int main() {
     cout << "Saving map" << endl;
     mp->saveMap();
 
-    //Disconnect player
+    cout << "Disconnecting Player" << endl;
     delete as;
     delete mp;
     delete lr;

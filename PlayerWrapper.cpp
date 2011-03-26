@@ -55,6 +55,10 @@ int PlayerWrapper::createRest() {
     return 0;
 }
 
+void PlayerWrapper::goTo(double x, double y) {
+    return goTo(player_pose2d_t{x, y, 0});
+}
+
 void PlayerWrapper::goTo(player_pose2d_t pose) {
     playerc_position2d_set_cmd_pose(position2d, pose.px, pose.py, 0, pose.pa);
 }

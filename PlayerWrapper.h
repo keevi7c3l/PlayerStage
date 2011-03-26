@@ -35,6 +35,7 @@ public:
     double getMaxRange();
 
     void goTo(player_pose2d_t pose);
+    void goTo(double x, double y);
     double getRobX();
     double getRobY();
     double getRobA();
