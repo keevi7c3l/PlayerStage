@@ -1,6 +1,9 @@
 #include "astarImpTest.h"
 #include <iostream>
 
+static Node nodes[MAPSIZE_X][MAPSIZE_Y];
+static bool visited[MAPSIZE_X][MAPSIZE_Y] = {false};
+
 Node::Node() {
 }
 
@@ -43,14 +46,18 @@ bool isValidLocation(int sx, int sy, int x, int y) {
 }
 
 double getMovCost(int currX, int currY, int x, int y) {
-    return 1;
+    if (currX != x && currY != y)
+        return 1.41; //sqrt(2)
+    else
+        return 1.0;
 }
 
 float getHeuCost(int x, int y, int tx, int ty) {
-    float dx = tx - x;
-    float dy = ty - y;
-
-    return sqrt((dx * dx)+(dy * dy));
+    //        float dx = tx - x;
+    //        float dy = ty - y;
+    //
+    //        return sqrt((dx * dx)+(dy * dy));
+    return hypot(tx - x, ty - y);
 }
 
 bool inList(list<Node> &list, Node &node) {
@@ -104,10 +111,17 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     int maxDepth = 0;
     open.clear();
     closed.clear();
+    path->clear();
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
             nodes[x][y] = Node(x, y);
+        }
+    }
+
+    for (int x = 0; x < MAPSIZE_X; x++) {
+        for (int y = 0; y < MAPSIZE_Y; y++) {
+            visited[x][y] = false;
         }
     }
 
@@ -126,6 +140,9 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
         current->inOpen = false;
         current->inClosed = true;
 
+        if (visited[current->x][current->y]) continue;
+        visited[current->x][current->y] = true;
+
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if ((x == 0) && (y == 0)) {
@@ -136,10 +153,9 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
                 int yp = y + current->y;
 
                 if (isValidLocation(sx, sy, xp, yp)) {
+                    if (visited[xp][yp]) continue;
                     float nextStepCost = current->cost + getMovCost(current->x, current->y, xp, yp);
                     Node *neighbour = &nodes[xp][yp];
-                    visited[xp][yp] = true;
-
 
                     if (nextStepCost < neighbour->cost) {
                         if (inList(open, *neighbour)) {
@@ -170,12 +186,10 @@ bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
         return false;
     }
 
-    path->clear();
     Node *target = &nodes[tx][ty];
     printf("Findpath adding path\n");
-    int count = 0;
+
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
-        printf("Count: %d\n", ++count);
 
         path->push_back((player_pose2d_t) {
                         getCoorValue((double) target->x), getCoorValue((double) target->y), 0.0

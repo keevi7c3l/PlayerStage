@@ -38,7 +38,4 @@ public:
 bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
 player_pose2d_t findClosest(double currX, double currY);
 
-static Node nodes[MAPSIZE_X][MAPSIZE_Y];
-static bool visited[MAPSIZE_X][MAPSIZE_Y] = {false};
-
 #endif

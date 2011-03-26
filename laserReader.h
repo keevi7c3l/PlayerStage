@@ -1,10 +1,3 @@
-/* 
- * File:   laserReader.h
- * Author: koy
- *
- * Created on February 16, 2011, 10:54 PM
- */
-
 #ifndef LASERREADER_H
 #define	LASERREADER_H
 #include <libplayerc/playerc.h>
