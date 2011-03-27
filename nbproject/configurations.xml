@@ -5,9 +5,9 @@
                    displayName="Header Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>Astar.h</itemPath>
       <itemPath>LaserReader.h</itemPath>
       <itemPath>Mapper.h</itemPath>
+      <itemPath>PathPlanner.h</itemPath>
       <itemPath>PlayerWrapper.h</itemPath>
     </logicalFolder>
     <logicalFolder name="ResourceFiles"
@@ -19,9 +19,9 @@
                    displayName="Source Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>Astar.cpp</itemPath>
       <itemPath>LaserReader.cpp</itemPath>
       <itemPath>Mapper.cpp</itemPath>
+      <itemPath>PathPlanner.cpp</itemPath>
       <itemPath>PlayerWrapper.cpp</itemPath>
       <itemPath>main.cpp</itemPath>
     </logicalFolder>

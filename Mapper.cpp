@@ -1,5 +1,9 @@
 #include "Mapper.h"
 
+/*
+ * Constructor for the Mapper class; takes the desired width and height of the OpenCv
+ * Map.
+ */
 Mapper::Mapper(int width, int height) : isMap(false), isIntMap(false), width(width), height(height) {
     this->centreX = (width / 2);
     this->centreY = (height / 2);
@@ -14,7 +18,9 @@ Mapper::Mapper(int width, int height) : isMap(false), isIntMap(false), width(wid
     this->internalImage = cvCreateImage(cvSize(width, height), 8, 3);
 }
 
-/* Convert floating point to integer and round up*/
+/* 
+ * Convert floating point to integer and round up.
+ */
 int floatToInt(float num) {
     int temp = (int) (num * 100);
     temp %= 10;
@@ -22,18 +28,27 @@ int floatToInt(float num) {
     else return (int) (num * 10);
 }
 
+/*
+ * Initializes the external map.
+ */
 void Mapper::mapInit() {
     cvNamedWindow(map_window_name.c_str(), 1);
     cvSet(image, bckgrndCol, 0);
     isMap = true;
 }
 
+/*
+ * Initializes the internal map.
+ */
 void Mapper::intMapInit() {
     cvNamedWindow(internal_window_name.c_str(), 1);
     cvSet(internalImage, bckgrndCol, 0);
     isIntMap = true;
 }
 
+/*
+ * Draws the current projected path to the internal map.
+ */
 void Mapper::drawPath(std::vector<player_pose2d_t> *path) {
     if (!isIntMap) intMapInit();
     CvPoint first, second;
@@ -51,6 +66,9 @@ void Mapper::drawPath(std::vector<player_pose2d_t> *path) {
     cvWaitKey(10);
 }
 
+/*
+ * Draws the external map.
+ */
 void Mapper::drawMap(PlayerWrapper *pw) {
     if (!isMap) mapInit();
     pt.x = centreX;
@@ -72,6 +90,9 @@ void Mapper::drawMap(PlayerWrapper *pw) {
     }
 }
 
+/*
+ * Draws the internal map.
+ */
 void Mapper::drawInternalMap(std::vector<player_pose2d_t> *path, LaserReader *lr) {
     if (!isIntMap) intMapInit();
     cvSet(internalImage, bckgrndCol);
@@ -95,6 +116,9 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> *path, LaserReader *lr
     cvWaitKey(10);
 }
 
+/*
+ * Saves both the internal and external maps as .jpg files.
+ */
 void Mapper::saveMap() {
     std::string jpg = ".jpg";
     std::string mapExt = map_window_name + jpg;

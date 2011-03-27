@@ -16,7 +16,6 @@
 
 #ifndef LASERREADER_H
 #define	LASERREADER_H
-#include <libplayerc/playerc.h>
 #include <cmath>
 #include "PlayerWrapper.h"
 

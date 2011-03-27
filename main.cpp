@@ -1,5 +1,5 @@
 #include "LaserReader.h"
-#include "Astar.h"
+#include "PathPlanner.h"
 #include "PlayerWrapper.h"
 #include "Mapper.h"
 
@@ -12,6 +12,10 @@ Astar *as;
 
 vector<player_pose2d_t> path;
 
+/*
+ * Returns true if the robot has arrived at a destination (tx,ty).
+ * We use an approximate value because player's "goto" command is not very precise.
+ */
 bool isArrived(double tx, double ty) {
     pw->readClient();
     return ((abs(pw->getRobX() - tx) <= 0.15) && (abs(pw->getRobY() - ty) <= 0.15));
@@ -25,6 +29,9 @@ void printPath() {
     }
 }
 
+/*
+ * Improves the path by simplifying it.
+ */
 player_pose2d_t calcChange() {
     double deltaX, deltaY;
     double deltas = 0;

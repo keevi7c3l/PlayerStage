@@ -33,10 +33,10 @@ OBJECTDIR=build/${CND_CONF}/${CND_PLATFORM}
 
 # Object Files
 OBJECTFILES= \
+	${OBJECTDIR}/PathPlanner.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/PlayerWrapper.o \
 	${OBJECTDIR}/LaserReader.o \
-	${OBJECTDIR}/Astar.o \
 	${OBJECTDIR}/Mapper.o
 
 
@@ -64,6 +64,11 @@ dist/Release/GNU-Linux-x86/playerstage_classed: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage_classed ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
+${OBJECTDIR}/PathPlanner.o: PathPlanner.cpp 
+	${MKDIR} -p ${OBJECTDIR}
+	${RM} $@.d
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/PathPlanner.o PathPlanner.cpp
+
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
@@ -78,11 +83,6 @@ ${OBJECTDIR}/LaserReader.o: LaserReader.cpp
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/LaserReader.o LaserReader.cpp
-
-${OBJECTDIR}/Astar.o: Astar.cpp 
-	${MKDIR} -p ${OBJECTDIR}
-	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/Astar.o Astar.cpp
 
 ${OBJECTDIR}/Mapper.o: Mapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}

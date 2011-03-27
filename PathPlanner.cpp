@@ -1,5 +1,8 @@
-#include "Astar.h"
+#include "PathPlanner.h"
 
+/*
+ * Returns false if the location is out of bounds or an obstacle.
+ */
 bool Astar::isValidLocation(int sx, int sy, int x, int y) {
     bool invalid = (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y);
 
@@ -10,14 +13,20 @@ bool Astar::isValidLocation(int sx, int sy, int x, int y) {
     return !invalid;
 }
 
+/*
+ * Returns the cost of moving.
+ */
 double getMovCost(int currX, int currY, int x, int y) {
     if (currX != x && currY != y) {
-        return 1.41; //sqrt(2)
+        return 1.5;
     } else {
         return 1.0;
     }
 }
 
+/*
+ * Returns an estimate of the distance between (x,y) and (tx,ty).
+ */
 float getHeuCost(int x, int y, int tx, int ty) {
     //        float dx = tx - x;
     //        float dy = ty - y;
@@ -26,6 +35,9 @@ float getHeuCost(int x, int y, int tx, int ty) {
     return hypot(tx - x, ty - y);
 }
 
+/*
+ * Returns true if the Node is in the specified list.
+ */
 bool inList(list<Node> &list, Node & node) {
     std::list<Node>::iterator i;
     for (i = list.begin(); i != list.end(); ++i) {
@@ -36,10 +48,17 @@ bool inList(list<Node> &list, Node & node) {
     return false;
 }
 
+/*
+ * Overloading for finding the closest point (converts the coordinates to
+ * matrix values).
+ */
 player_pose2d_t Astar::findClosest(double currX, double currY) {
     return findClosest(lr->getMatrixValue(currX), lr->getMatrixValue(currY));
 }
 
+/*
+ * Returns the closest unseen, accessible point to the robot's x and y position.
+ */
 player_pose2d_t Astar::findClosest(int x, int y) {
     Path *mainPath = new Path(-1, -1, 1000000); // If no path found, returned path will be smaller than the XY_BOUND
     for (int i = 0; i < MAPSIZE_X; i++) {
@@ -65,10 +84,17 @@ player_pose2d_t Astar::findClosest(int x, int y) {
     return path;
 }
 
+/*
+ * Overloading for the findPath method. Converts the coordinates to matrix values.
+ */
 bool Astar::findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path) {
     return findPath(lr->getMatrixValue(sx), lr->getMatrixValue(sy), lr->getMatrixValue(tx), lr->getMatrixValue(ty), path);
 }
-
+/*
+ * Main A* algorithm, takes a start coordinate (sx,sy) and a goal (tx,ty) and updates
+ * the path vector to the best path it could find.
+ * Returns false if no valid path was found.
+ */
 bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
     printf("Findpath started\n");
     list<Node> closed;
