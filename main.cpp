@@ -73,8 +73,7 @@ int main() {
     cout << "Creating PathFinder" << endl;
     as = new Astar(lr);
 
-    struct timeval start, end;
-
+    timeval start, end;
     gettimeofday(&start, NULL);
 
     cout << "Starting Main Loop" << endl;
