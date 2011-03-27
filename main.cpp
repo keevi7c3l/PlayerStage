@@ -22,7 +22,7 @@ bool isArrived(double tx, double ty) {
 }
 
 void printPath() {
-    std::vector<player_pose2d_t>::iterator it = path.begin();
+    vector<player_pose2d_t>::iterator it = path.begin();
     while (it != path.end()) {
         cout << "(" << it->px << ", " << it->py << ")" << endl;
         it++;
@@ -36,7 +36,7 @@ player_pose2d_t calcChange() {
     double deltaX, deltaY;
     double deltas = 0;
     int counter = 0;
-    std::vector<player_pose2d_t>::iterator it = path.end();
+    vector<player_pose2d_t>::iterator it = path.end();
     int i = path.size() - 2;
     while (it != path.begin()) {
         player_pose2d_t thisPose = path[i];
@@ -73,6 +73,10 @@ int main() {
     cout << "Creating PathFinder" << endl;
     as = new Astar(lr);
 
+    struct timeval start, end;
+
+    gettimeofday(&start, NULL);
+
     cout << "Starting Main Loop" << endl;
     while (true) {
         lr->readLaser();
@@ -84,10 +88,10 @@ int main() {
             break;
         }
 
-        printf("Looking for path between: (%f, %f) and (%f, %f)\n", pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py);
+        cout << "Looking for path between: (" << pw->getRobX() << ", " << pw->getRobY() << ") and (" << nextDest.px << ", " << nextDest.py << ")" << endl;
 
         while (!as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) {
-            cout << "No Path found from " << "(" << pw->getRobX() << ", " << pw->getRobY() << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
+            cout << "No Path found from (" << pw->getRobX() << ", " << pw->getRobY() << ") to (" << nextDest.px << ", " << nextDest.py << ")" << endl;
             lr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
             break;
         }
@@ -102,6 +106,14 @@ int main() {
             //mp->drawMap(&pw);
         }
     }
+
+    gettimeofday(&end, NULL);
+
+    int secs = end.tv_sec - start.tv_sec;
+    int mins = secs / 60;
+    secs -= (60 * mins);
+
+    cout << "Mapping took: " << mins << " minutes, " << secs << " seconds." << endl;
 
     cout << "Saving map" << endl;
     mp->saveMap();

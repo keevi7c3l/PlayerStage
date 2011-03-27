@@ -80,7 +80,7 @@ player_pose2d_t Astar::findClosest(int x, int y) {
     path.px = lr->getCoorValue(mainPath->x);
     path.py = lr->getCoorValue(mainPath->y);
     free(mainPath);
-    printf("Closest path is: (%f, %f)\n", path.px, path.py);
+    cout << "Closest path is: (" << path.px << ", " << path.py << ")" << endl;
     return path;
 }
 
@@ -90,6 +90,7 @@ player_pose2d_t Astar::findClosest(int x, int y) {
 bool Astar::findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path) {
     return findPath(lr->getMatrixValue(sx), lr->getMatrixValue(sy), lr->getMatrixValue(tx), lr->getMatrixValue(ty), path);
 }
+
 /*
  * Main A* algorithm, takes a start coordinate (sx,sy) and a goal (tx,ty) and updates
  * the path vector to the best path it could find.
@@ -119,7 +120,7 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
     nodes[sx][sy].inOpen = true;
     nodes[tx][ty].parent = NULL;
 
-    printf("Findpath while loop started\n");
+    cout << "Findpath while loop started" << endl;
     while ((maxDepth < MAX_DIST) && (open.size() != 0)) {
         Node *current = &(open.front());
         if ((current->x == nodes[tx][ty].x) && (current->y == nodes[tx][ty].y)) {
@@ -170,13 +171,13 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
             }
         }
     }
-    printf("Findpath while loop finished; depth: %d\n", maxDepth);
+    cout << "Findpath while loop finished; depth: " << maxDepth << endl;
     if (nodes[tx][ty].parent == NULL) {
         return false;
     }
 
     Node *target = &nodes[tx][ty];
-    printf("Findpath adding path\n");
+    cout << "Findpath adding path" << endl;
 
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 

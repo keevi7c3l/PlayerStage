@@ -78,6 +78,7 @@ void LaserReader::setSeen(double robX, double robY, double dist, double angle) {
 void LaserReader::setIsland(double sx, double sy) {
     return setIsland(getMatrixValue(sx), getMatrixValue(sy));
 }
+
 /*
  * Recursive function that turns unreachable inslands into objects (i.e. intraverisble).
  * It takes on point within the island and then recursively sets all the points around it
@@ -123,7 +124,7 @@ void LaserReader::readLaser() {
         y = pw->getRobY() + (sin(angle) * dist);
 
         if (x<-X_BOUND - 0.5 || x > X_BOUND + 0.5 || y<-Y_BOUND - 0.5 || y > Y_BOUND + 0.5) {
-            printf("Out of Map: (%f,%f)\n", x, y);
+            std::cout << "Out of Map: (" << x << ", " << y << ")" << std::endl;
         } else if (dist < pw->getMaxRange()) {
             setObst(x, y);
         }
