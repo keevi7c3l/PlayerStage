@@ -52,9 +52,7 @@ void LaserReader::setSeen(double robX, double robY, double dist, double angle) {
 }
 
 void LaserReader::setIsland(double sx, double sy) {
-    int mx = getMatrixValue(sx);
-    int my = getMatrixValue(sy);
-    return setIsland(mx, my);
+    return setIsland(getMatrixValue(sx), getMatrixValue(sy));
 }
 
 void LaserReader::setIsland(int mx, int my) {
@@ -84,7 +82,7 @@ void LaserReader::readLaser() {
 
     for (int i = 0; i < pw->getLaserCount(); i++) {
         dist = pw->getRange(i);
-        angle = pw->getRobA() + DTOR(i - 180);
+        angle = pw->getRobA() + DTOR(i - (pw->getLaserCount() / 2.0));
 
         x = pw->getRobX() + (cos(angle) * dist);
         y = pw->getRobY() + (sin(angle) * dist);

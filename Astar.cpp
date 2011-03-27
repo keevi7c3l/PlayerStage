@@ -41,7 +41,7 @@ player_pose2d_t Astar::findClosest(double currX, double currY) {
 }
 
 player_pose2d_t Astar::findClosest(int x, int y) {
-    Path *mainPath = new Path(0, 0, 1000000);
+    Path *mainPath = new Path(-1, -1, 1000000); // If no path found, returned path will be smaller than the XY_BOUND
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
             if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2) || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack

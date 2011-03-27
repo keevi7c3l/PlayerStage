@@ -71,13 +71,17 @@ int main() {
         lr->readLaser();
 
         player_pose2d_t nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+
+        if ((nextDest.px < -X_BOUND) && (nextDest.py <-Y_BOUND)) {
+            cout << "Whole Map has been traversed" << endl;
+            break;
+        }
+
         printf("Looking for path between: (%f, %f) and (%f, %f)\n", pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py);
 
         while (!as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) {
-            //while (!findPath(pw->getRobX(), pw->getRobY(), 8.0, 8.0, &path)) {
             cout << "No Path found from " << "(" << pw->getRobX() << ", " << pw->getRobY() << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
-            pw->readClient();
-            lr->setIsland(nextDest.px, nextDest.py);
+            lr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
             break;
         }
 
