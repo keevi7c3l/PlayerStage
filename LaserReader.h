@@ -31,6 +31,7 @@ public:
     int getMatrixValue(double i);
     double getCoorValue(int i);
     void setSeen(double x, double y);
+    void setIsland(double sx, double sy);
 private:
     PlayerWrapper *pw;
 
@@ -39,6 +40,7 @@ private:
 
     void setObst(double x, double y);
     void setSeen(double robX, double robY, double dist, double angle);
+    void setIsland(int mx, int my);
 };
 
 #endif	/* LASERREADER_H */

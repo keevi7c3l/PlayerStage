@@ -63,7 +63,7 @@ int main() {
     cout << "Creating Mapper" << endl;
     mp = new Mapper(500, 500);
 
-    cout << "PathFinder" << endl;
+    cout << "Creating PathFinder" << endl;
     as = new Astar(lr);
 
     cout << "Starting Main Loop" << endl;
@@ -77,7 +77,7 @@ int main() {
             //while (!findPath(pw->getRobX(), pw->getRobY(), 8.0, 8.0, &path)) {
             cout << "No Path found from " << "(" << pw->getRobX() << ", " << pw->getRobY() << ")" << " to " << "(" << nextDest.px << ", " << nextDest.py << ")" << endl;
             pw->readClient();
-            lr->setSeen(nextDest.px, nextDest.py);
+            lr->setIsland(nextDest.px, nextDest.py);
             break;
         }
 

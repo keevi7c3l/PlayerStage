@@ -51,6 +51,25 @@ void LaserReader::setSeen(double robX, double robY, double dist, double angle) {
     }
 }
 
+void LaserReader::setIsland(double sx, double sy) {
+    int mx = getMatrixValue(sx);
+    int my = getMatrixValue(sy);
+    return setIsland(mx, my);
+}
+
+void LaserReader::setIsland(int mx, int my) {
+    for (int x = -1; x < 2; x++) {
+        for (int y = -1; y < 2; y++) {
+            int newX = mx + x;
+            int newY = my + y;
+            if (!isObst(newX, newY)) {
+                obstacle[newX][newY] = true; // we don't want any padding
+                return setIsland(newX, newY);
+            }
+        }
+    }
+}
+
 void LaserReader::setSeen(double x, double y) {
     int newX = getMatrixValue(x);
     int newY = getMatrixValue(y);
