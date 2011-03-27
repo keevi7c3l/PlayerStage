@@ -57,7 +57,7 @@ player_pose2d_t Astar::findClosest(double currX, double currY) {
 }
 
 /*
- * Returns the closest unseen, accessible point to the robot's x and y position.
+ * Returns the closest unseen, accessible, point to the robot's current position.
  */
 player_pose2d_t Astar::findClosest(int x, int y) {
     Path *mainPath = new Path(-1, -1, 1000000); // If no path found, returned path will be smaller than the XY_BOUND
@@ -96,7 +96,6 @@ bool Astar::findPath(double sx, double sy, double tx, double ty, vector<player_p
  * Returns false if no valid path was found.
  */
 bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path) {
-    printf("Findpath started\n");
     list<Node> closed;
     list<Node> open;
     int maxDepth = 0;

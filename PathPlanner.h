@@ -5,7 +5,7 @@
  * Created on March 26, 2011, 4:43 PM
  *
  * This Class Calculates the next best path using the A* algorithm.
- * The findPath method computes the next best goal to go to by looking at the
+ * The findClosest method computes the next best goal to go to by looking at the
  * closest unseen points.
  */
 
