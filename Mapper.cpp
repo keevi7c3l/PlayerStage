@@ -112,7 +112,7 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path, LaserReader *lr)
             }
         }
     }
-    drawPath(path);
+    //drawPath(path);
     cvFlip(internalImage, NULL, 0);
     cvShowImage(internal_window_name.c_str(), internalImage);
     cvWaitKey(10);

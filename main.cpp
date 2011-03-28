@@ -125,6 +125,7 @@ int main() {
     cout << "Mapping took: " << mins << " minutes, " << secs << " seconds." << endl;
 
     cout << "Saving map" << endl;
+    mp->drawInternalMap(path, lr);
     mp->saveMap();
 
     cout << "Disconnecting Player" << endl;
