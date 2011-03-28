@@ -57,6 +57,9 @@ player_pose2d_t calcChange() {
         i--;
         counter++;
     }
+    return ( player_pose2d_t{
+        -X_BOUND, -Y_BOUND, 0
+    });
 }
 
 int main() {
@@ -101,8 +104,8 @@ int main() {
         pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
-            mp->drawInternalMap(path, lr);
-            //mp->drawMap(&pw);
+            //mp->drawInternalMap(path, lr);
+            mp->drawMap(pw);
         }
     }
 

@@ -44,8 +44,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
-CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
+CCFLAGS=-m64 `pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
+CXXFLAGS=-m64 `pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -67,27 +67,27 @@ dist/Debug/GNU-Linux-x86/playerstage: ${OBJECTFILES}
 ${OBJECTDIR}/PathPlanner.o: PathPlanner.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/PathPlanner.o PathPlanner.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/PathPlanner.o PathPlanner.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/PlayerWrapper.o: PlayerWrapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
 
 ${OBJECTDIR}/LaserReader.o: LaserReader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/LaserReader.o LaserReader.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/LaserReader.o LaserReader.cpp
 
 ${OBJECTDIR}/Mapper.o: Mapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -g -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapper.o Mapper.cpp
+	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapper.o Mapper.cpp
 
 # Subprojects
 .build-subprojects:

@@ -27,10 +27,10 @@ public:
     bool inClosed;
     bool inOpen;
 
-    Node() {
+    Node() : depth(0), cost(0), heuristic(0), inClosed(false), inOpen(false) {
     }
 
-    Node(int x, int y) : x(x), y(y), inOpen(false), inClosed(false), cost(0), heuristic(0), depth(0) {
+    Node(int x, int y) : x(x), y(y), depth(0), cost(0), heuristic(0), inClosed(false), inOpen(false)  {
     }
 
     bool operator<(const Node& other) {

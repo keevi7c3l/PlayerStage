@@ -47,7 +47,10 @@
       </toolsSet>
       <compileType>
         <ccTool>
+          <developmentMode>6</developmentMode>
+          <architecture>2</architecture>
           <commandLine>`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg</commandLine>
+          <warningLevel>2</warningLevel>
         </ccTool>
       </compileType>
     </conf>

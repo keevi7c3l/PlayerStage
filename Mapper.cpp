@@ -77,15 +77,15 @@ void Mapper::drawMap(PlayerWrapper *pw) {
     for (int i = 0; i < pw->getLaserCount(); i++) {
         dist = pw->getRange(i);
         if (dist < pw->getMaxRange()) {
-            angle = (1.5 * M_PI) + DTOR(i) + pw->getRobA();
+            angle = DTOR(i-180) + pw->getRobA();
             pt1.x = (centreX + floatToInt(pw->getRobX()));
             pt1.y = (centreY - floatToInt(pw->getRobY()));
             pt.x = (int) (pt1.x + (cos(angle) * dist * 10));
             pt.y = (int) (pt1.y - (sin(angle) * dist * 10));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 1, 4, 0); //object
-            cvShowImage(map_window_name.c_str(), image);
-            cvWaitKey(10);
+            //cvShowImage(map_window_name.c_str(), image);
+            //cvWaitKey(10);
         }
     }
 }
