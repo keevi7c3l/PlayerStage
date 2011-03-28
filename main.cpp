@@ -92,7 +92,7 @@ int main() {
     mp = new Mapper(500, 500);
 
     cout << "Creating PathFinder" << endl;
-    / as = new Astar(lr);
+    as = new Astar(lr);
 
     player_pose2d_t nextDest = (player_pose2d_t){
         pw->getRobX(), pw->getRobY(), pw->getRobA()
