@@ -14,6 +14,10 @@ double LaserReader::getCoorValue(int i) {
     return ((double) i / SCALE)-X_BOUND;
 }
 
+bool LaserReader::isObst(player_pose2d_t pose) {
+    return isObst(getMatrixValue(pose.px), getMatrixValue(pose.py));
+}
+
 /*
  * Returns false if the given array value is not registered as an obstacle.
  */
@@ -22,6 +26,10 @@ bool LaserReader::isObst(int x, int y) {
         return obstacle[x][y];
     }
     return true;
+}
+
+bool LaserReader::isSeen(player_pose2d_t pose) {
+    return isSeen(getMatrixValue(pose.px), getMatrixValue(pose.py));
 }
 
 /*

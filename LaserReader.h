@@ -26,7 +26,9 @@ public:
     }
     void readLaser();
     bool isObst(int x, int y);
+    bool isObst(player_pose2d_t pose);
     bool isSeen(int x, int y);
+    bool isSeen(player_pose2d_t pose);
     int getMatrixValue(double i);
     double getCoorValue(int i);
     void setSeen(double x, double y);

@@ -66,6 +66,7 @@ int main() {
 
     cout << "Starting up robot" << endl;
     pw = new PlayerWrapper(6665);
+    pw->readClient();
 
     cout << "Creating LaserReader" << endl;
     lr = new LaserReader(pw);
@@ -76,6 +77,10 @@ int main() {
     cout << "Creating PathFinder" << endl;
     as = new Astar(lr);
 
+    player_pose2d_t nextDest = (player_pose2d_t){
+        pw->getRobX(), pw->getRobY(), pw->getRobA()
+    };
+
     timeval start, end;
     gettimeofday(&start, NULL);
 
@@ -83,7 +88,9 @@ int main() {
     while (true) {
         lr->readLaser();
 
-        player_pose2d_t nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+        if (lr->isObst(nextDest) || lr->isSeen(nextDest)) {
+            nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+        }
 
         if ((nextDest.px < -X_BOUND) && (nextDest.py <-Y_BOUND)) {
             cout << "Whole Map has been traversed" << endl;

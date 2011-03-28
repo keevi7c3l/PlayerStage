@@ -17,22 +17,18 @@ bool Astar::isValidLocation(int sx, int sy, int x, int y) {
  * Returns the cost of moving.
  */
 double getMovCost(int currX, int currY, int x, int y) {
-    if (currX != x && currY != y) {
-        return 1.5;
-    } else {
-        return 1.0;
-    }
+    return 1.0;
 }
 
 /*
  * Returns an estimate of the distance between (x,y) and (tx,ty).
  */
 float getHeuCost(int x, int y, int tx, int ty) {
-    //        float dx = tx - x;
-    //        float dy = ty - y;
-    //
-    //        return sqrt((dx * dx)+(dy * dy));
-    return hypot(tx - x, ty - y);
+    float dx = tx - x;
+    float dy = ty - y;
+
+    return sqrt((dx * dx)+(dy * dy));
+    // return hypot(tx - x, ty - y);
 }
 
 /*
