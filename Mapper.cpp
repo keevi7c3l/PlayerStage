@@ -49,16 +49,16 @@ void Mapper::intMapInit() {
 /*
  * Draws the current projected path to the internal map.
  */
-void Mapper::drawPath(std::vector<player_pose2d_t> *path) {
+void Mapper::drawPath(std::vector<player_pose2d_t> path) {
     if (!isIntMap) intMapInit();
     CvPoint first, second;
-    std::vector<player_pose2d_t>::iterator it = path->end();
-    while (it > path->begin() + 1) {
-        first.x = (it->px + X_BOUND) * 10;
-        first.y = (it->py + Y_BOUND) * 10;
+    std::vector<player_pose2d_t>::iterator it = path.end();
+    while (it > path.begin() + 1) {
+        first.x = ((*it).px + X_BOUND) * 10;
+        first.y = ((*it).py + Y_BOUND) * 10;
         it--;
-        second.x = (it->px + X_BOUND) * 10;
-        second.y = (it->py + Y_BOUND) * 10;
+        second.x = ((*it).px + X_BOUND) * 10;
+        second.y = ((*it).py + Y_BOUND) * 10;
         it--;
         cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
     }
@@ -93,19 +93,21 @@ void Mapper::drawMap(PlayerWrapper *pw) {
 /*
  * Draws the internal map.
  */
-void Mapper::drawInternalMap(std::vector<player_pose2d_t> *path, LaserReader *lr) {
+void Mapper::drawInternalMap(std::vector<player_pose2d_t> path, LaserReader *lr) {
     if (!isIntMap) intMapInit();
     cvSet(internalImage, bckgrndCol);
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
+            double newX = lr->getCoorValue(x);
+            double newY = lr->getCoorValue(y);
             if (lr->isSeen(x, y)) {
-                pt.x = ((lr->getCoorValue(x) + X_BOUND) * 10);
-                pt.y = ((lr->getCoorValue(y) + Y_BOUND) * 10);
+                pt.x = ((newX + X_BOUND) * 10);
+                pt.y = ((newY + Y_BOUND) * 10);
                 cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
             }
             if (lr->isObst(x, y)) {
-                pt.x = ((lr->getCoorValue(x) + X_BOUND) * 10);
-                pt.y = ((lr->getCoorValue(y) + Y_BOUND) * 10);
+                pt.x = ((newX + X_BOUND) * 10);
+                pt.y = ((newY + Y_BOUND) * 10);
                 cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
             }
         }

@@ -102,7 +102,6 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
     int maxDepth = 0;
     open.clear();
     closed.clear();
-    path->clear();
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
@@ -122,6 +121,7 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
 
     cout << "Findpath while loop started" << endl;
     while ((maxDepth < MAX_DIST) && (open.size() != 0)) {
+        open.sort();
         Node *current = &(open.front());
         if ((current->x == nodes[tx][ty].x) && (current->y == nodes[tx][ty].y)) {
             break;
@@ -165,7 +165,6 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
                         maxDepth = max(maxDepth, neighbour->setParent(current));
                         open.push_back(*neighbour);
                         neighbour->inOpen = true;
-                        open.sort();
                     }
                 }
             }
@@ -178,17 +177,17 @@ bool Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pa
 
     Node *target = &nodes[tx][ty];
     cout << "Findpath adding path" << endl;
-
+    path->clear();
     while ((target->x != nodes[sx][sy].x) || (target->y != nodes[sx][sy].y)) {
 
         path->push_back((player_pose2d_t) {
-                        lr->getCoorValue((double) target->x), lr->getCoorValue((double) target->y), 0.0
+            lr->getCoorValue((double) target->x), lr->getCoorValue((double) target->y), 0.0
         });
         target = target->parent;
     }
 
     path->push_back((player_pose2d_t) {
-                    lr->getCoorValue((double) sx), lr->getCoorValue((double) sy), 0.0
+        lr->getCoorValue((double) sx), lr->getCoorValue((double) sy), 0.0
     });
     return true;
 }

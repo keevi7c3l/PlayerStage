@@ -44,13 +44,13 @@ player_pose2d_t calcChange() {
         deltaX = abs(thisPose.px - lastPose.px);
         deltaY = abs(thisPose.py - lastPose.py);
         double newDeltas = deltaX + deltaY;
-        if (newDeltas != deltas && counter > 2) {
+        if (newDeltas != deltas && counter > 4) {
             return path[i + 1];
         }
         deltas = newDeltas;
         float dx = path[i].px - path[path.size() - 1].px;
         float dy = path[i].py - path[path.size() - 1].py;
-        if (sqrt((dx * dx)+(dy * dy)) > 1) {
+        if (sqrt((dx * dx)+(dy * dy)) > 5) {
             return path[i + 1];
         }
         it--;
@@ -101,7 +101,7 @@ int main() {
         pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
-            mp->drawInternalMap(&path, lr);
+            mp->drawInternalMap(path, lr);
             //mp->drawMap(&pw);
         }
     }

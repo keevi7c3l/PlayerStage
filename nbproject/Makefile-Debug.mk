@@ -58,11 +58,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/playerstage_classed
+	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/playerstage
 
-dist/Debug/GNU-Linux-x86/playerstage_classed: ${OBJECTFILES}
+dist/Debug/GNU-Linux-x86/playerstage: ${OBJECTFILES}
 	${MKDIR} -p dist/Debug/GNU-Linux-x86
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage_classed ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/PathPlanner.o: PathPlanner.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -95,7 +95,7 @@ ${OBJECTDIR}/Mapper.o: Mapper.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r build/Debug
-	${RM} dist/Debug/GNU-Linux-x86/playerstage_classed
+	${RM} dist/Debug/GNU-Linux-x86/playerstage
 
 # Subprojects
 .clean-subprojects:

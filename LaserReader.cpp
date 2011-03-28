@@ -89,9 +89,11 @@ void LaserReader::setIsland(int mx, int my) {
         for (int y = -1; y < 2; y++) {
             int newX = mx + x;
             int newY = my + y;
-            if (!isObst(newX, newY)) {
-                obstacle[newX][newY] = true; // we don't want any padding
-                return setIsland(newX, newY);
+            if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+                if (!isObst(newX, newY)) {
+                    obstacle[newX][newY] = true; // we don't want any padding
+                    return setIsland(newX, newY);
+                }
             }
         }
     }
