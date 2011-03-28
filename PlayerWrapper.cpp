@@ -7,6 +7,7 @@ PlayerWrapper::PlayerWrapper(int port) {
     createClient(port);
     createLaser();
     createP2D();
+    createFid();
     createRest();
 }
 
@@ -18,6 +19,8 @@ PlayerWrapper::~PlayerWrapper() {
     playerc_laser_destroy(laser);
     playerc_position2d_unsubscribe(position2d);
     playerc_position2d_destroy(position2d);
+    playerc_fiducial_unsubscribe(fiducial);
+    playerc_fiducial_destroy(fiducial);
     playerc_client_disconnect(client);
     playerc_client_destroy(client);
 }
@@ -50,6 +53,18 @@ int PlayerWrapper::createLaser() {
 int PlayerWrapper::createP2D() {
     position2d = playerc_position2d_create(client, 0);
     if (playerc_position2d_subscribe(position2d, PLAYERC_OPEN_MODE) != 0) {
+        fprintf(stderr, "error: %s\n", playerc_error_str());
+        return -1;
+    }
+    return 0;
+}
+
+/*
+ * Creates the Fiducial proxy.
+ */
+int PlayerWrapper::createFid() {
+    fiducial = playerc_fiducial_create(client, 0);
+    if (playerc_fiducial_subscribe(fiducial, PLAYERC_OPEN_MODE) != 0) {
         fprintf(stderr, "error: %s\n", playerc_error_str());
         return -1;
     }
@@ -134,4 +149,39 @@ double PlayerWrapper::getRobY() {
  */
 double PlayerWrapper::getRobA() {
     return position2d->pa;
+}
+
+/*
+ * Gets the current number of detected fiducials.
+ */
+int PlayerWrapper::getFidCount() {
+    return fiducial->fiducials_count;
+}
+
+/*
+ * Gets the ID of a fiducial.
+ */
+int PlayerWrapper::getFidID(int i) {
+    return fiducial->fiducials[i].id;
+}
+
+/*
+ * Gets the X coordinate of a fiducial.
+ */
+double PlayerWrapper::getFidX(int i) {
+    return fiducial->fiducials[i].pose.px;
+}
+
+/*
+ * Gets the Y coordinate of a fiducial.
+ */
+double PlayerWrapper::getFidY(int i) {
+    return fiducial->fiducials[i].pose.py;
+}
+
+/*
+ * Gets the angle of a fiducial.
+ */
+double PlayerWrapper::getFidYAW(int i) {
+    return fiducial->fiducials[i].pose.pyaw;
 }

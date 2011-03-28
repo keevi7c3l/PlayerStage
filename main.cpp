@@ -62,11 +62,28 @@ player_pose2d_t calcChange() {
     });
 }
 
+/*
+ * Tests the fiducial reader.
+ */
+void fidTester() {
+    cout << "Starting fiducial Loop" << endl;
+    while (true) {
+        pw->readClient();
+        printf("Fid count: %d\n", pw->getFidCount());
+        for (int i = 0; i < pw->getFidCount(); i++) {
+            printf("ID: %d\n", pw->getFidID(i));
+            printf("Pose: (%f ,%f); angle: %f RAD\n", pw->getFidX(i), pw->getFidY(i), pw->getFidYAW(i));
+        }
+    }
+}
+
 int main() {
 
     cout << "Starting up robot" << endl;
     pw = new PlayerWrapper(6665);
     pw->readClient();
+
+    // fidTester(); // Uncomment to test fiducial
 
     cout << "Creating LaserReader" << endl;
     lr = new LaserReader(pw);
@@ -75,7 +92,7 @@ int main() {
     mp = new Mapper(500, 500);
 
     cout << "Creating PathFinder" << endl;
-    as = new Astar(lr);
+    / as = new Astar(lr);
 
     player_pose2d_t nextDest = (player_pose2d_t){
         pw->getRobX(), pw->getRobY(), pw->getRobA()

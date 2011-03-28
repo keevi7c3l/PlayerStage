@@ -30,22 +30,34 @@ public:
     ~PlayerWrapper();
     void readClient();
 
+    // Laser Methods
     double getRange(int);
     int getLaserCount();
     double getMaxRange();
 
+    // P2D Methods
     void goTo(player_pose2d_t pose);
     void goTo(double x, double y);
     double getRobX();
     double getRobY();
     double getRobA();
+
+    // Fiducial Methods
+    int getFidCount();
+    int getFidID(int i);
+    double getFidX(int i);
+    double getFidY(int i);
+    double getFidYAW(int i);
 private:
     playerc_client_t *client;
     playerc_laser_t *laser;
     playerc_position2d_t *position2d;
+    playerc_fiducial_t *fiducial;
+    
     int createClient(int);
     int createLaser();
     int createP2D();
+    int createFid();
     int createRest();
 };
 #endif	/* PLAYERWRAPPER_H */
