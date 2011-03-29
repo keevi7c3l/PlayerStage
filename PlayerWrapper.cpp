@@ -23,6 +23,10 @@ PlayerWrapper::~PlayerWrapper() {
     playerc_fiducial_destroy(fiducial);
     playerc_client_disconnect(client);
     playerc_client_destroy(client);
+    free(laser);
+    free(position2d);
+    free(fiducial);
+    free(client);
 }
 
 /*

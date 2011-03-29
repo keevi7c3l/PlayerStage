@@ -4,7 +4,7 @@
  * Converts a cartesian coordinate to its array equivalent integer.
  */
 int LaserReader::getMatrixValue(double i) {
-    return (int) ((i + X_BOUND) * SCALE); // relying on X and Y bound being the same
+    return (int) ((i + X_BOUND) * SCALE); // relying on X and Y bound being the same for simplicity
 }
 
 /*
@@ -14,6 +14,16 @@ double LaserReader::getCoorValue(int i) {
     return ((double) i / SCALE)-X_BOUND;
 }
 
+/*
+ * Returns true if x and y are in the array.
+ */
+bool LaserReader::isInMap(int x, int y) {
+    return (x >= 0 && x < MAPSIZE_X && y >= 0 && y < MAPSIZE_X);
+}
+
+/*
+ * Overloaded method.
+ */
 bool LaserReader::isObst(player_pose2d_t pose) {
     return isObst(getMatrixValue(pose.px), getMatrixValue(pose.py));
 }
@@ -22,12 +32,15 @@ bool LaserReader::isObst(player_pose2d_t pose) {
  * Returns false if the given array value is not registered as an obstacle.
  */
 bool LaserReader::isObst(int x, int y) {
-    if (x >= 0 && x < MAPSIZE_X && y >= 0 && y < MAPSIZE_X) {
+    if (isInMap(x, y)) {
         return obstacle[x][y];
     }
     return true;
 }
 
+/*
+ * Overloaded method.
+ */
 bool LaserReader::isSeen(player_pose2d_t pose) {
     return isSeen(getMatrixValue(pose.px), getMatrixValue(pose.py));
 }
@@ -36,7 +49,7 @@ bool LaserReader::isSeen(player_pose2d_t pose) {
  * Returns false if the given array value is not registered as having been seen by the robot.
  */
 bool LaserReader::isSeen(int x, int y) {
-    if (x >= 0 && x < MAPSIZE_X && y >= 0 && y < MAPSIZE_X) {
+    if (isInMap(x, y)) {
         return seen[x][y];
     }
     return true;
@@ -55,7 +68,7 @@ void LaserReader::setObst(double x, double y) {
             double yn = y + j;
             int newX = getMatrixValue(xn);
             int newY = getMatrixValue(yn);
-            if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+            if (isInMap(newX, newY)) {
                 obstacle[newX][newY] = true;
             }
         }
@@ -73,7 +86,7 @@ void LaserReader::setSeen(double robX, double robY, double dist, double angle) {
         y = robY + (sin(angle) * dist);
         int newX = getMatrixValue(x);
         int newY = getMatrixValue(y);
-        if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+        if (isInMap(newX, newY)) {
             seen[newX][newY] = true;
         }
         dist -= (1.0 / SCALE);
@@ -97,24 +110,13 @@ void LaserReader::setIsland(int mx, int my) {
         for (int y = -1; y < 2; y++) {
             int newX = mx + x;
             int newY = my + y;
-            if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
+            if (isInMap(newX, newY)) {
                 if (!isObst(newX, newY) && !isSeen(newX, newY)) {
                     seen[newX][newY] = true; // we don't want any padding
                     return setIsland(newX, newY);
                 }
             }
         }
-    }
-}
-
-/*
- * Sets a given coordinate to "seen" in the array.
- */
-void LaserReader::setSeen(double x, double y) {
-    int newX = getMatrixValue(x);
-    int newY = getMatrixValue(y);
-    if (newX >= 0 && newX < MAPSIZE_X && newY >= 0 && newY < MAPSIZE_X) {
-        seen[newX][newY] = true;
     }
 }
 

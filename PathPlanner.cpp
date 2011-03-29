@@ -1,22 +1,18 @@
 #include "PathPlanner.h"
-#include <queue>
 
 /*
  * Returns false if the location is out of bounds or an obstacle.
  */
-bool Astar::isValidLocation(int sx, int sy, int x, int y) {
-    return (x < 0) || (y < 0) || (x >= MAPSIZE_X) || (y >= MAPSIZE_Y) || lr->isObst(x, y) || ((sx == x) && (sy == y));
+bool Astar::isInvalid(int sx, int sy, int x, int y) {
+    return !lr->isInMap(x, y) || lr->isObst(x, y) || ((sx == x) && (sy == y));
 }
 
 /*
  * Returns the cost of moving.
  */
 double getMovCost(int currX, int currY, int x, int y) {
-    if (currX != x && currY != y) {
-        return 1.4;
-    } else {
-        return 1.0;
-    }
+    if (currX != x && currY != y) return 1.4;
+    else return 1.0;
 }
 
 /*
@@ -44,50 +40,8 @@ bool inList(list<Node> &list, Node & node) {
 }
 
 /*
- * Overloading for finding the closest point (converts the coordinates to
- * matrix values).
+ * Returns true if (tx,ty) is within a certain diameter (int range) of (x,y).
  */
-player_pose2d_t Astar::findClosest(double currX, double currY) {
-    return findClosest2(lr->getMatrixValue(currX), lr->getMatrixValue(currY));
-}
-
-/*
- * Returns the closest unseen, accessible, point to the robot's current position.
- */
-player_pose2d_t Astar::findClosest(int x, int y) {
-    Path *mainPath = new Path(-1, -1, 1000000); // If no path found, returned path will be smaller than the XY_BOUND
-    for (int i = 0; i < MAPSIZE_X; i++) {
-        for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2) || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack
-                continue;
-            }
-            if (!lr->isSeen(i, j) && i != x && j != y && !lr->isObst(i, j)) {
-                double currentHeu = getHeuCost(x, y, i, j);
-                if (currentHeu < mainPath->cost) {
-                    mainPath->x = i;
-                    mainPath->y = j;
-                    mainPath->cost = currentHeu;
-                }
-            }
-        }
-    }
-    player_pose2d_t path;
-    path.px = lr->getCoorValue(mainPath->x);
-    path.py = lr->getCoorValue(mainPath->y);
-    //free(mainPath);
-    cout << "Closest path is: (" << path.px << ", " << path.py << ")" << endl;
-    return path;
-}
-
-struct Paath {
-    int x, y;
-    double cost;
-};
-
-bool operator<(const Paath &a, const Paath &b) {
-    return a.cost > b.cost;
-}
-
 bool Astar::isInProximity(int x, int y, int tx, int ty) {
     double sx = lr->getCoorValue(x);
     double sy = lr->getCoorValue(y);
@@ -95,45 +49,73 @@ bool Astar::isInProximity(int x, int y, int tx, int ty) {
     double tsy = lr->getCoorValue(ty);
     int range = 1;
     bool isit = (((sx + range >= tsx && tsx >= sx) || (sx - range <= tsx && tsx <= sx)) && ((sy + range >= tsy && tsy >= sy) || (sy - range <= tsy && tsy <= sy)));
-    //printf("(%f,%f) and (%f,%f) is %d\n", sx, sy, tsx, tsy, isit);
     return isit;
 }
 
-player_pose2d_t Astar::findClosest2(int x, int y) {
-    std::priority_queue<Paath> currPath;
+struct Path {
+    int x, y;
+    double cost;
+};
+
+bool operator<(const Path &a, const Path &b) {
+    return a.cost > b.cost;
+}
+
+/*
+ * Overloading for finding the closest point (converts the coordinates to
+ * matrix values).
+ */
+player_pose2d_t Astar::findClosest(double currX, double currY) {
+    return findClosest(lr->getMatrixValue(currX), lr->getMatrixValue(currY));
+}
+
+/*
+ * Returns the closest unseen, accessible, point to the robot's current position.
+ * It will compare the two closest points in terms of direct distance and then determine which one is
+ * effectively closer by taking obstacles into consideration.
+ * We only compare two points because otherwise the computation would be too slow.
+ */
+player_pose2d_t Astar::findClosest(int x, int y) {
+    priority_queue<Path> currPath;
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2) || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { //hack
+            if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2)
+                    || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { // Don't consider points close to the boundaries of the map
                 continue;
             }
             if (!lr->isSeen(i, j) && i != x && j != y && !lr->isObst(i, j)) {
-                if (lr->getCoorValue(i)<-11 || lr->getCoorValue(i) > 11 || lr->getCoorValue(j)<-7 || lr->getCoorValue(j) > 7) { //hackety hack
+                if (lr->getCoorValue(i)<-11 || lr->getCoorValue(i) > 11 ||
+                        lr->getCoorValue(j)<-7 || lr->getCoorValue(j) > 7) {
 
-                    currPath.push((Paath) {
-                        i, j, getHeuCost(x, y, i, j) + 100
+                    currPath.push((Path) {
+                        i, j, getHeuCost(x, y, i, j) + 100 // prioritize points closer to the centre of the map.
                     });
                 } else {
 
-                    currPath.push((Paath) {
+                    currPath.push((Path) {
                         i, j, getHeuCost(x, y, i, j)
                     });
                 }
             }
         }
     }
+
+    /* No Path found */
     if (currPath.empty()) {
-        cout << "empty queue" << endl;
 
         return ((player_pose2d_t) {
-            -X_BOUND-0.1, -Y_BOUND-0.1, 0
+            -X_BOUND - 0.1, -Y_BOUND - 0.1, 0
         });
     }
-    Paath closest = currPath.top();
-    Paath secondC;
-    bool isSec = false;
+
+    Path closest = currPath.top();
+    Path secondC;
     currPath.pop();
+    bool isSec = false;
+
+    /* Look for a point to compare the first to */
     while (!currPath.empty()) {
-        Paath temp = currPath.top();
+        Path temp = currPath.top();
         if (!isInProximity(closest.x, closest.y, temp.x, temp.y)) {
             secondC = temp;
             isSec = true;
@@ -141,24 +123,18 @@ player_pose2d_t Astar::findClosest2(int x, int y) {
         }
         currPath.pop();
     }
-    Paath mainPath;
+
+    /* If a second point exists, compare its real length to the first point */
     if (isSec) {
-       // printf("First has cost: %f, second: %f\n", closest.cost, secondC.cost);
         vector<player_pose2d_t> temp;
         int firstSize = 100000;
         int secondSize = 100000;
-        if (findPath(x, y, closest.x, closest.y, &temp)) {
-            firstSize = temp.size();
-        }
-        if (findPath(x, y, secondC.x, secondC.y, &temp)) {
-            secondSize = temp.size();
-        }
-       // printf("First has size: %d, second: %d\n", firstSize, secondSize);
-        firstSize < secondSize ? mainPath = closest : mainPath = secondC;
-    } else mainPath = closest;
-    player_pose2d_t path;
-    path.px = lr->getCoorValue(mainPath.x);
-    path.py = lr->getCoorValue(mainPath.y);
+        if (findPath(x, y, closest.x, closest.y, &temp)) firstSize = temp.size();
+        if (findPath(x, y, secondC.x, secondC.y, &temp)) secondSize = temp.size();
+        if (firstSize > secondSize) closest = secondC; // is the second point actually closer?
+    }
+
+    player_pose2d_t path = (player_pose2d_t){lr->getCoorValue(closest.x), lr->getCoorValue(closest.y), 0};
     cout << "Closest path is: (" << path.px << ", " << path.py << ")" << endl;
     return path;
 }
@@ -179,8 +155,6 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
     list<Node> closed;
     list<Node> open;
     int maxDepth = 0;
-    open.clear();
-    closed.clear();
 
     for (int x = 0; x < MAPSIZE_X; x++) {
         for (int y = 0; y < MAPSIZE_Y; y++) {
@@ -222,7 +196,7 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
                 int xp = x + current->x;
                 int yp = y + current->y;
 
-                if (!isValidLocation(sx, sy, xp, yp)) {
+                if (!isInvalid(sx, sy, xp, yp)) {
                     // if (visited[xp][yp]) continue;
                     float nextStepCost = current->cost + getMovCost(current->x, current->y, xp, yp);
                     Node *neighbour = &nodes[xp][yp];
@@ -248,7 +222,6 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
             }
         }
     }
-    //cout << "Findpath while loop finished; depth: " << maxDepth << endl;
 
     /* Player sometimes confuses the robot's position and A* thus thinks every cell around it is an obstacle */
     if (maxDepth == 0) {

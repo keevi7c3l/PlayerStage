@@ -54,11 +54,11 @@ void Mapper::drawPath(std::vector<player_pose2d_t> path) {
     CvPoint first, second;
     std::vector<player_pose2d_t>::iterator it = path.end()-1;
     while (it > path.begin() + 1) {
-        first.x = (*it).px * 10 + X_BOUND * 10;
-        first.y = (*it).py * 10 + Y_BOUND * 10;
+        first.x = (*it).px * 15 + X_BOUND * 15;
+        first.y = (*it).py * 15 + Y_BOUND * 15;
         it--;
-        second.x = (*it).px * 10 + X_BOUND * 10;
-        second.y = (*it).py * 10 + Y_BOUND * 10;
+        second.x = (*it).px * 15 + X_BOUND * 15;
+        second.y = (*it).py * 15 + Y_BOUND * 15;
         it--;
         cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
     }
@@ -81,7 +81,7 @@ void Mapper::drawMap(PlayerWrapper *pw) {
             pt.x = (int) (pt1.x + (cos(angle) * dist * 40));
             pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
-            cvLine(image, pt, pt, objCol, 1, 4, 0); //object
+            cvLine(image, pt, pt, objCol, 2, 4, 0); //object
             //cvShowImage(map_window_name.c_str(), image);
             //cvWaitKey(10);
         }
@@ -99,14 +99,14 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path, LaserReader *lr)
             double newX = lr->getCoorValue(x);
             double newY = lr->getCoorValue(y);
             if (lr->isSeen(x, y)) {
-                pt.x = (newX * 10 + X_BOUND * 10);
-                pt.y = (newY * 10 + Y_BOUND * 10);
-                cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
+                pt.x = (newX * 15 + X_BOUND * 15);
+                pt.y = (newY * 15 + Y_BOUND * 15);
+                cvLine(internalImage, pt, pt, freeCol, 2, 4, 0);
             }
             if (lr->isObst(x, y)) {
-                pt.x = (newX * 10 + X_BOUND * 10);
-                pt.y = (newY * 10 + Y_BOUND * 10);
-                cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
+                pt.x = (newX * 15 + X_BOUND * 15);
+                pt.y = (newY * 15 + Y_BOUND * 15);
+                cvLine(internalImage, pt, pt, objCol, 2, 4, 0);
             }
         }
     }

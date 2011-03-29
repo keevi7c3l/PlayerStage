@@ -13,6 +13,7 @@
 #define	ASTARIMPSEARCH_H
 #include <list>
 #include <vector>
+#include <queue>
 #include "LaserReader.h"
 
 #define MAX_DIST 10000
@@ -30,7 +31,7 @@ public:
     Node() : depth(0), cost(0), heuristic(0), inClosed(false), inOpen(false) {
     }
 
-    Node(int x, int y) : x(x), y(y), depth(0), cost(0), heuristic(0), inClosed(false), inOpen(false)  {
+    Node(int x, int y) : x(x), y(y), depth(0), cost(0), heuristic(0), inClosed(false), inOpen(false) {
     }
 
     bool operator<(const Node& other) {
@@ -59,35 +60,26 @@ public:
     }
 };
 
-class Path {
-public:
-    int x, y;
-    double cost;
-
-    Path(int x, int y, double cost) : x(x), y(y), cost(cost) {
-
-    }
-};
-
 class Astar {
 public:
 
-    Astar(LaserReader *lr, PlayerWrapper *pw) : lr(lr), pw(pw) {
+    Astar(LaserReader *lr) : lr(lr) {
 
     }
+
     int findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path); // Method Overload
     player_pose2d_t findClosest(double currX, double currY); // Method Overload
+    
 private:
     LaserReader *lr;
-    PlayerWrapper *pw;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
     bool visited[MAPSIZE_X][MAPSIZE_Y];
 
+    player_pose2d_t findClosestSimple(int x, int y);
     player_pose2d_t findClosest(int x, int y);
-    player_pose2d_t findClosest2(int x, int y);
     bool isInProximity(int x, int y, int tx, int ty);
+    bool isInvalid(int sx, int sy, int x, int y);
     int findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
-    bool isValidLocation(int sx, int sy, int x, int y);
 };
 
 #endif

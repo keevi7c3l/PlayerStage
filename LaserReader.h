@@ -25,13 +25,16 @@ public:
     LaserReader(PlayerWrapper *pw) : pw(pw) {
     }
     void readLaser();
+
     bool isObst(int x, int y);
     bool isObst(player_pose2d_t pose);
     bool isSeen(int x, int y);
     bool isSeen(player_pose2d_t pose);
+    bool isInMap(int x, int y);
+
     int getMatrixValue(double i);
     double getCoorValue(int i);
-    void setSeen(double x, double y);
+
     void setIsland(double sx, double sy);
 private:
     PlayerWrapper *pw;
