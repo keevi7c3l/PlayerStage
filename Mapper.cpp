@@ -5,8 +5,8 @@
  * Map.
  */
 Mapper::Mapper(int width, int height) : isMap(false), isIntMap(false), width(width), height(height) {
-    this->centreX = (width / 2);
-    this->centreY = (height / 2);
+    this->centreX = (width / 8);
+    this->centreY = (height / 8);
     this->bckgrndCol = CV_RGB(92, 92, 92);
     this->objCol = CV_RGB(0, 0, 0);
     this->freeCol = CV_RGB(150, 150, 150);
@@ -32,7 +32,7 @@ int floatToInt(float num) {
  * Initializes the external map.
  */
 void Mapper::mapInit() {
-    cvNamedWindow(map_window_name.c_str(), 1);
+    //cvNamedWindow(map_window_name.c_str(), 1);
     cvSet(image, bckgrndCol, 0);
     isMap = true;
 }
@@ -52,18 +52,16 @@ void Mapper::intMapInit() {
 void Mapper::drawPath(std::vector<player_pose2d_t> path) {
     if (!isIntMap) intMapInit();
     CvPoint first, second;
-    std::vector<player_pose2d_t>::iterator it = path.end();
+    std::vector<player_pose2d_t>::iterator it = path.end()-1;
     while (it > path.begin() + 1) {
-        first.x = ((*it).px + X_BOUND) * 10;
-        first.y = ((*it).py + Y_BOUND) * 10;
+        first.x = (*it).px * 10 + X_BOUND * 10;
+        first.y = (*it).py * 10 + Y_BOUND * 10;
         it--;
-        second.x = ((*it).px + X_BOUND) * 10;
-        second.y = ((*it).py + Y_BOUND) * 10;
+        second.x = (*it).px * 10 + X_BOUND * 10;
+        second.y = (*it).py * 10 + Y_BOUND * 10;
         it--;
         cvLine(internalImage, first, second, cvScalar(255, 0, 0), 1, 4, 0);
     }
-    cvShowImage(internal_window_name.c_str(), image);
-    cvWaitKey(10);
 }
 
 /*
@@ -77,11 +75,11 @@ void Mapper::drawMap(PlayerWrapper *pw) {
     for (int i = 0; i < pw->getLaserCount(); i++) {
         dist = pw->getRange(i);
         if (dist < pw->getMaxRange()) {
-            angle = DTOR(i-180) + pw->getRobA();
-            pt1.x = (centreX + floatToInt(pw->getRobX()));
-            pt1.y = (centreY - floatToInt(pw->getRobY()));
-            pt.x = (int) (pt1.x + (cos(angle) * dist * 10));
-            pt.y = (int) (pt1.y - (sin(angle) * dist * 10));
+            angle = DTOR(i - 180) + pw->getRobA();
+            pt1.x = (centreX + floatToInt(pw->getRobX()))*4;
+            pt1.y = (centreY - floatToInt(pw->getRobY()))*4;
+            pt.x = (int) (pt1.x + (cos(angle) * dist * 40));
+            pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 1, 4, 0); //object
             //cvShowImage(map_window_name.c_str(), image);
@@ -101,18 +99,18 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path, LaserReader *lr)
             double newX = lr->getCoorValue(x);
             double newY = lr->getCoorValue(y);
             if (lr->isSeen(x, y)) {
-                pt.x = ((newX + X_BOUND) * 10);
-                pt.y = ((newY + Y_BOUND) * 10);
+                pt.x = (newX * 10 + X_BOUND * 10);
+                pt.y = (newY * 10 + Y_BOUND * 10);
                 cvLine(internalImage, pt, pt, freeCol, 1, 4, 0);
             }
             if (lr->isObst(x, y)) {
-                pt.x = ((newX + X_BOUND) * 10);
-                pt.y = ((newY + Y_BOUND) * 10);
+                pt.x = (newX * 10 + X_BOUND * 10);
+                pt.y = (newY * 10 + Y_BOUND * 10);
                 cvLine(internalImage, pt, pt, objCol, 1, 4, 0);
             }
         }
     }
-    //drawPath(path);
+    drawPath(path);
     cvFlip(internalImage, NULL, 0);
     cvShowImage(internal_window_name.c_str(), internalImage);
     cvWaitKey(10);

@@ -16,7 +16,7 @@
 
 class Mapper {
 public:
-    Mapper(int width = 500, int height = 500);
+    Mapper(int width = 1000, int height = 1000);
     void drawInternalMap(std::vector<player_pose2d_t> path, LaserReader *lr);
     void drawMap(PlayerWrapper *pw);
     void saveMap();

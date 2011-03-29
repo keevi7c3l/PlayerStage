@@ -18,7 +18,7 @@ vector<player_pose2d_t> path;
  */
 bool isArrived(double tx, double ty) {
     pw->readClient();
-    return ((abs(pw->getRobX() - tx) <= 0.15) && (abs(pw->getRobY() - ty) <= 0.15));
+    return ((abs(pw->getRobX() - tx) <= 0.30) && (abs(pw->getRobY() - ty) <= 0.30));
 }
 
 void printPath() {
@@ -92,7 +92,7 @@ int main() {
     mp = new Mapper(500, 500);
 
     cout << "Creating PathFinder" << endl;
-    as = new Astar(lr);
+    as = new Astar(lr, pw);
 
     player_pose2d_t nextDest = (player_pose2d_t){
         pw->getRobX(), pw->getRobY(), pw->getRobA()
@@ -101,34 +101,48 @@ int main() {
     timeval start, end;
     gettimeofday(&start, NULL);
 
+    int oldDepth = 10000;
+    int newDepth = 100000;
+
     cout << "Starting Main Loop" << endl;
     while (true) {
         lr->readLaser();
 
-        if (lr->isObst(nextDest) || lr->isSeen(nextDest)) {
+        if (lr->isObst(nextDest) || lr->isSeen(nextDest) || oldDepth < newDepth) {
             nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+            oldDepth = 10000;
         }
-
         if ((nextDest.px < -X_BOUND) && (nextDest.py <-Y_BOUND)) {
             cout << "Whole Map has been traversed" << endl;
             break;
         }
 
         cout << "Looking for path between: (" << pw->getRobX() << ", " << pw->getRobY() << ") and (" << nextDest.px << ", " << nextDest.py << ")" << endl;
-
-        while (!as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) {
+        if ((newDepth = as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) == -1) {
             cout << "No Path found from (" << pw->getRobX() << ", " << pw->getRobY() << ") to (" << nextDest.px << ", " << nextDest.py << ")" << endl;
             lr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
-            break;
+            continue;
+        } else if (newDepth == 0) {
+            cout << "Player messed up, rereading position" << endl;
+            continue;
+        } else if (newDepth > oldDepth) {
+            continue;
         }
 
+        oldDepth = newDepth;
+
         player_pose2d_t nextPoint = calcChange();
+
+        if (nextPoint.px == -X_BOUND && nextPoint.py == -Y_BOUND) {
+            cout << "calcChanged messed up" << endl;
+            continue;
+        }
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
         pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             lr->readLaser();
-            //mp->drawInternalMap(path, lr);
+            mp->drawInternalMap(path, lr);
             mp->drawMap(pw);
         }
     }

@@ -72,18 +72,21 @@ public:
 class Astar {
 public:
 
-    Astar(LaserReader *lr) : lr(lr) {
+    Astar(LaserReader *lr, PlayerWrapper *pw) : lr(lr), pw(pw) {
 
     }
-    bool findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path); // Method Overload
+    int findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path); // Method Overload
     player_pose2d_t findClosest(double currX, double currY); // Method Overload
 private:
     LaserReader *lr;
+    PlayerWrapper *pw;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
     bool visited[MAPSIZE_X][MAPSIZE_Y];
 
     player_pose2d_t findClosest(int x, int y);
-    bool findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
+    player_pose2d_t findClosest2(int x, int y);
+    bool isInProximity(int x, int y, int tx, int ty);
+    int findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
     bool isValidLocation(int sx, int sy, int x, int y);
 };
 
