@@ -52,7 +52,8 @@ void Mapper::intMapInit() {
 void Mapper::drawPath(std::vector<player_pose2d_t> path) {
     if (!isIntMap) intMapInit();
     CvPoint first, second;
-    std::vector<player_pose2d_t>::iterator it = path.end()-1;
+    if (path.empty()) return;
+    std::vector<player_pose2d_t>::iterator it = path.end() - 1;
     while (it > path.begin() + 1) {
         first.x = (*it).px * 15 + X_BOUND * 15;
         first.y = (*it).py * 15 + Y_BOUND * 15;

@@ -112,6 +112,7 @@ int main() {
 
         /* This is to avoid the robot going back and forth between two equidistant points */
         if (lr->isObst(nextDest) || lr->isSeen(nextDest) || oldDepth < newDepth) {
+            cout << "Looking for new path" << endl;
             nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
             oldDepth = 10000;
         }
@@ -130,6 +131,7 @@ int main() {
             continue;
         } else if (newDepth == 0) {
             cout << "Player messed up, rereading position" << endl;
+            pw->goTo(pw->getRobX() + 0.1, pw->getRobY() + 0.1);
             continue;
         } else if (newDepth > oldDepth) { // The goal is further away than we first estimated, let's look for a closer point
             continue;

@@ -69,7 +69,7 @@ public:
 
     int findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path); // Method Overload
     player_pose2d_t findClosest(double currX, double currY); // Method Overload
-    
+
 private:
     LaserReader *lr;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
