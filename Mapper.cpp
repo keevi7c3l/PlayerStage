@@ -7,9 +7,9 @@
 Mapper::Mapper(int width, int height) : isMap(false), isIntMap(false), width(width), height(height) {
     this->centreX = (width / 8);
     this->centreY = (height / 8);
-    this->bckgrndCol = CV_RGB(92, 92, 92);
+    this->bckgrndCol = CV_RGB(100, 100, 100);
     this->objCol = CV_RGB(0, 0, 0);
-    this->freeCol = CV_RGB(150, 150, 150);
+    this->freeCol = CV_RGB(225, 225, 225);
 
     this->map_window_name = "Map";
     this->image = cvCreateImage(cvSize(width, height), 8, 3);
