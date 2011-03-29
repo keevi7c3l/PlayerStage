@@ -73,7 +73,6 @@ public:
 private:
     LaserReader *lr;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
-    bool visited[MAPSIZE_X][MAPSIZE_Y];
 
     player_pose2d_t findClosestSimple(int x, int y);
     player_pose2d_t findClosest(int x, int y);

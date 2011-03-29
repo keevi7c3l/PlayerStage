@@ -162,12 +162,6 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
         }
     }
 
-    for (int x = 0; x < MAPSIZE_X; x++) {
-        for (int y = 0; y < MAPSIZE_Y; y++) {
-            visited[x][y] = false;
-        }
-    }
-
     open.push_back(nodes[sx][sy]);
     nodes[sx][sy].inOpen = true;
     nodes[tx][ty].parent = NULL;
@@ -184,9 +178,6 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
         current->inOpen = false;
         current->inClosed = true;
 
-        if (visited[current->x][current->y]) continue;
-        visited[current->x][current->y] = true;
-
         for (int x = -1; x < 2; x++) {
             for (int y = -1; y < 2; y++) {
                 if ((x == 0) && (y == 0)) {
@@ -197,7 +188,6 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
                 int yp = y + current->y;
 
                 if (!isInvalid(sx, sy, xp, yp)) {
-                    if (visited[xp][yp]) continue;
                     float nextStepCost = current->cost + getMovCost(current->x, current->y, xp, yp);
                     Node *neighbour = &nodes[xp][yp];
                     if (nextStepCost < neighbour->cost) {

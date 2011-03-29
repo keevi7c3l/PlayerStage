@@ -23,10 +23,6 @@ PlayerWrapper::~PlayerWrapper() {
     playerc_fiducial_destroy(fiducial);
     playerc_client_disconnect(client);
     playerc_client_destroy(client);
-    free(laser);
-    free(position2d);
-    free(fiducial);
-    free(client);
 }
 
 /*
@@ -94,9 +90,15 @@ int PlayerWrapper::createRest() {
 
 /*
  * Overloaded method taking x and y coordinates and command the robot to go there.
+ * Sets the angle to somewhere far away from an object.
  */
 void PlayerWrapper::goTo(double x, double y) {
-    return goTo(player_pose2d_t{x, y, 0});
+    double maximum = getMaxRange() + 1;
+    double i = 0;
+    for (; i < getLaserCount(); i++) {
+        maximum = std::max(getRange(i), maximum);
+    }
+    return goTo(player_pose2d_t{x, y, i});
 }
 
 /*

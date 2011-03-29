@@ -36,24 +36,24 @@ bool isArrived(double tx, double ty) {
  * Improves the path by simplifying it.
  */
 player_pose2d_t calcChange() {
-    double deltaX, deltaY;
-    double deltas = 0;
+    int deltaX, deltaY;
+    int deltas = 0;
     int counter = 0;
     vector<player_pose2d_t>::iterator it = path.end();
     int i = path.size() - 2;
     while (it != path.begin()) {
         player_pose2d_t thisPose = path[i];
         player_pose2d_t lastPose = path[i + 1];
-        deltaX = abs(thisPose.px - lastPose.px);
-        deltaY = abs(thisPose.py - lastPose.py);
-        double newDeltas = deltaX + deltaY;
+        deltaX = (int) (abs(thisPose.px - lastPose.px)*10);
+        deltaY = (int) (abs(thisPose.py - lastPose.py)*10);
+        int newDeltas = deltaX + deltaY;
         if (newDeltas != deltas && counter > 4) {
             return path[i + 1];
         }
         deltas = newDeltas;
         float dx = path[i].px - path[path.size() - 1].px;
         float dy = path[i].py - path[path.size() - 1].py;
-        if (sqrt((dx * dx)+(dy * dy)) > 5) {
+        if (sqrt((dx * dx)+(dy * dy)) > 5) { // don't simplify over 5 meters
             return path[i + 1];
         }
         it--;
@@ -131,7 +131,7 @@ int main() {
             continue;
         } else if (newDepth == 0) {
             cout << "Player messed up, rereading position" << endl;
-            pw->goTo(pw->getRobX() + 0.1, pw->getRobY() + 0.1);
+            pw->goTo(pw->getRobX() + 0.1, pw->getRobY() + 0.1); // Move away from object
             continue;
         } else if (newDepth > oldDepth) { // The goal is further away than we first estimated, let's look for a closer point
             continue;
