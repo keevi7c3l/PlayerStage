@@ -36,7 +36,7 @@ OBJECTFILES= \
 	${OBJECTDIR}/PathPlanner.o \
 	${OBJECTDIR}/main.o \
 	${OBJECTDIR}/PlayerWrapper.o \
-	${OBJECTDIR}/LaserReader.o \
+	${OBJECTDIR}/DataReader.o \
 	${OBJECTDIR}/Mapper.o
 
 
@@ -58,11 +58,11 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Release.mk dist/Release/GNU-Linux-x86/playerstage
+	"${MAKE}"  -f nbproject/Makefile-Release.mk dist/Release/GNU-Linux-x86/playerstage2
 
-dist/Release/GNU-Linux-x86/playerstage: ${OBJECTFILES}
+dist/Release/GNU-Linux-x86/playerstage2: ${OBJECTFILES}
 	${MKDIR} -p dist/Release/GNU-Linux-x86
-	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage ${OBJECTFILES} ${LDLIBSOPTIONS} 
+	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage2 ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/PathPlanner.o: PathPlanner.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -79,10 +79,10 @@ ${OBJECTDIR}/PlayerWrapper.o: PlayerWrapper.cpp
 	${RM} $@.d
 	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
 
-${OBJECTDIR}/LaserReader.o: LaserReader.cpp 
+${OBJECTDIR}/DataReader.o: DataReader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/LaserReader.o LaserReader.cpp
+	$(COMPILE.cc) -O2 -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataReader.o DataReader.cpp
 
 ${OBJECTDIR}/Mapper.o: Mapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}
@@ -95,7 +95,7 @@ ${OBJECTDIR}/Mapper.o: Mapper.cpp
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
 	${RM} -r build/Release
-	${RM} dist/Release/GNU-Linux-x86/playerstage
+	${RM} dist/Release/GNU-Linux-x86/playerstage2
 
 # Subprojects
 .clean-subprojects:

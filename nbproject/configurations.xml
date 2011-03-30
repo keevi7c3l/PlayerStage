@@ -5,7 +5,7 @@
                    displayName="Header Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>LaserReader.h</itemPath>
+      <itemPath>DataReader.h</itemPath>
       <itemPath>Mapper.h</itemPath>
       <itemPath>PathPlanner.h</itemPath>
       <itemPath>PlayerWrapper.h</itemPath>
@@ -19,7 +19,7 @@
                    displayName="Source Files"
                    projectFiles="true"
                    kind="SOURCE_LOGICAL_FOLDER">
-      <itemPath>LaserReader.cpp</itemPath>
+      <itemPath>DataReader.cpp</itemPath>
       <itemPath>Mapper.cpp</itemPath>
       <itemPath>PathPlanner.cpp</itemPath>
       <itemPath>PlayerWrapper.cpp</itemPath>

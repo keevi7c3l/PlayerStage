@@ -184,10 +184,3 @@ double PlayerWrapper::getFidX(int i) {
 double PlayerWrapper::getFidY(int i) {
     return fiducial->fiducials[i].pose.py;
 }
-
-/*
- * Gets the angle of a fiducial.
- */
-double PlayerWrapper::getFidYAW(int i) {
-    return fiducial->fiducials[i].pose.pyaw;
-}

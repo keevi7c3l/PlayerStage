@@ -47,7 +47,6 @@ public:
     int getFidID(int i);
     double getFidX(int i);
     double getFidY(int i);
-    double getFidYAW(int i);
 private:
     playerc_client_t *client;
     playerc_laser_t *laser;

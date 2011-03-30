@@ -14,7 +14,7 @@
 #include <list>
 #include <vector>
 #include <queue>
-#include "LaserReader.h"
+#include "DataReader.h"
 
 #define MAX_DIST 10000
 
@@ -63,7 +63,7 @@ public:
 class Astar {
 public:
 
-    Astar(LaserReader *lr) : lr(lr) {
+    Astar(DataReader *dr) : dr(dr) {
 
     }
 
@@ -71,7 +71,7 @@ public:
     player_pose2d_t findClosest(double currX, double currY); // Method Overload
 
 private:
-    LaserReader *lr;
+    DataReader *dr;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
 
     player_pose2d_t findClosestSimple(int x, int y);

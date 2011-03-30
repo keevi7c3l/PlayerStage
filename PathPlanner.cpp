@@ -4,7 +4,7 @@
  * Returns false if the location is out of bounds or an obstacle.
  */
 bool Astar::isInvalid(int sx, int sy, int x, int y) {
-    return !lr->isInMap(x, y) || lr->isObst(x, y) || ((sx == x) && (sy == y));
+    return !dr->isInMap(x, y) || dr->isObst(x, y) || ((sx == x) && (sy == y));
 }
 
 /*
@@ -43,10 +43,10 @@ bool inList(list<Node> &list, Node & node) {
  * Returns true if (tx,ty) is within a certain diameter (int range) of (x,y).
  */
 bool Astar::isInProximity(int x, int y, int tx, int ty) {
-    double sx = lr->getCoorValue(x);
-    double sy = lr->getCoorValue(y);
-    double tsx = lr->getCoorValue(tx);
-    double tsy = lr->getCoorValue(ty);
+    double sx = dr->getCoorValue(x);
+    double sy = dr->getCoorValue(y);
+    double tsx = dr->getCoorValue(tx);
+    double tsy = dr->getCoorValue(ty);
     int range = 1;
     bool isit = (((sx + range >= tsx && tsx >= sx) || (sx - range <= tsx && tsx <= sx)) && ((sy + range >= tsy && tsy >= sy) || (sy - range <= tsy && tsy <= sy)));
     return isit;
@@ -66,7 +66,7 @@ bool operator<(const Path &a, const Path &b) {
  * matrix values).
  */
 player_pose2d_t Astar::findClosest(double currX, double currY) {
-    return findClosest(lr->getMatrixValue(currX), lr->getMatrixValue(currY));
+    return findClosest(dr->getMatrixValue(currX), dr->getMatrixValue(currY));
 }
 
 /*
@@ -79,13 +79,13 @@ player_pose2d_t Astar::findClosest(int x, int y) {
     priority_queue<Path> currPath;
     for (int i = 0; i < MAPSIZE_X; i++) {
         for (int j = 0; j < MAPSIZE_Y; j++) {
-            if (lr->getCoorValue(i) <= -(X_BOUND - 0.2) || lr->getCoorValue(i) >= (X_BOUND - 0.2)
-                    || lr->getCoorValue(j) <= -(Y_BOUND - 0.2) || lr->getCoorValue(j) >= (Y_BOUND - 0.2)) { // Don't consider points close to the boundaries of the map
+            if (dr->getCoorValue(i) <= -(X_BOUND - 0.2) || dr->getCoorValue(i) >= (X_BOUND - 0.2)
+                    || dr->getCoorValue(j) <= -(Y_BOUND - 0.2) || dr->getCoorValue(j) >= (Y_BOUND - 0.2)) { // Don't consider points close to the boundaries of the map
                 continue;
             }
-            if (!lr->isSeen(i, j) && i != x && j != y && !lr->isObst(i, j)) {
-                if (lr->getCoorValue(i)<-11 || lr->getCoorValue(i) > 11 ||
-                        lr->getCoorValue(j)<-7 || lr->getCoorValue(j) > 7) {
+            if (!dr->isSeen(i, j) && i != x && j != y && !dr->isObst(i, j)) {
+                if (dr->getCoorValue(i)<-11 || dr->getCoorValue(i) > 11 ||
+                        dr->getCoorValue(j)<-7 || dr->getCoorValue(j) > 7) {
 
                     currPath.push((Path) {
                         i, j, getHeuCost(x, y, i, j) + 100 // prioritize points closer to the centre of the map.
@@ -134,7 +134,7 @@ player_pose2d_t Astar::findClosest(int x, int y) {
         if (firstSize > secondSize) closest = secondC; // is the second point actually closer?
     }
 
-    player_pose2d_t path = (player_pose2d_t){lr->getCoorValue(closest.x), lr->getCoorValue(closest.y), 0};
+    player_pose2d_t path = (player_pose2d_t){dr->getCoorValue(closest.x), dr->getCoorValue(closest.y), 0};
     cout << "Closest path is: (" << path.px << ", " << path.py << ")" << endl;
     return path;
 }
@@ -143,7 +143,7 @@ player_pose2d_t Astar::findClosest(int x, int y) {
  * Overloading for the findPath method. Converts the coordinates to matrix values.
  */
 int Astar::findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path) {
-    return findPath(lr->getMatrixValue(sx), lr->getMatrixValue(sy), lr->getMatrixValue(tx), lr->getMatrixValue(ty), path);
+    return findPath(dr->getMatrixValue(sx), dr->getMatrixValue(sy), dr->getMatrixValue(tx), dr->getMatrixValue(ty), path);
 }
 
 /*
@@ -235,14 +235,14 @@ int Astar::findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *pat
         }
 
         path->push_back((player_pose2d_t) {
-            lr->getCoorValue((double) target->x), lr->getCoorValue((double) target->y), 0.0
+            dr->getCoorValue((double) target->x), dr->getCoorValue((double) target->y), 0.0
         });
         target = target->parent;
         count++;
     }
 
     path->push_back((player_pose2d_t) {
-        lr->getCoorValue((double) sx), lr->getCoorValue((double) sy), 0.0
+        dr->getCoorValue((double) sx), dr->getCoorValue((double) sy), 0.0
     });
     return maxDepth;
 }

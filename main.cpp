@@ -1,4 +1,4 @@
-#include "LaserReader.h"
+#include "DataReader.h"
 #include "PathPlanner.h"
 #include "PlayerWrapper.h"
 #include "Mapper.h"
@@ -6,14 +6,14 @@
 using namespace std;
 
 PlayerWrapper *pw;
-LaserReader *lr;
+DataReader *dr;
 Mapper *mp;
 Astar *as;
 
 vector<player_pose2d_t> path;
 
 /*
- * Debug method for printing the current path
+ * Debug method for printing the current path (unused)
  */
 void printPath() {
     vector<player_pose2d_t>::iterator it = path.begin();
@@ -65,37 +65,20 @@ player_pose2d_t calcChange() {
     });
 }
 
-/*
- * Tests the fiducial reader.
- */
-void fidTester() {
-    cout << "Starting fiducial Loop" << endl;
-    while (true) {
-        pw->readClient();
-        printf("Fid count: %d\n", pw->getFidCount());
-        for (int i = 0; i < pw->getFidCount(); i++) {
-            printf("ID: %d\n", pw->getFidID(i));
-            printf("Pose: (%f ,%f); angle: %f RAD\n", pw->getFidX(i), pw->getFidY(i), pw->getFidYAW(i));
-        }
-    }
-}
-
 int main() {
 
     cout << "Starting up robot" << endl;
     pw = new PlayerWrapper(6665);
     pw->readClient();
 
-    // fidTester(); // Uncomment to test fiducial
-
-    cout << "Creating LaserReader" << endl;
-    lr = new LaserReader(pw);
+    cout << "Creating DataReader" << endl;
+    dr = new DataReader(pw);
 
     cout << "Creating Mapper" << endl;
-    mp = new Mapper(1000, 1000);
+    mp = new Mapper(1000, 1000, dr);
 
     cout << "Creating PathFinder" << endl;
-    as = new Astar(lr);
+    as = new Astar(dr);
 
     player_pose2d_t nextDest = (player_pose2d_t){
         pw->getRobX(), pw->getRobY(), pw->getRobA()
@@ -108,10 +91,11 @@ int main() {
 
     cout << "Starting Main Loop" << endl;
     while (true) {
-        lr->readLaser();
+        dr->readLaser();
+        dr->readFid();
 
         /* This is to avoid the robot going back and forth between two equidistant points */
-        if (lr->isObst(nextDest) || lr->isSeen(nextDest) || oldDepth < newDepth) {
+        if (dr->isObst(nextDest) || dr->isSeen(nextDest) || oldDepth < newDepth) {
             cout << "Looking for new path" << endl;
             nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
             oldDepth = 10000;
@@ -127,7 +111,7 @@ int main() {
 
         if ((newDepth = as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) == -1) {
             cout << "No Path found from (" << pw->getRobX() << ", " << pw->getRobY() << ") to (" << nextDest.px << ", " << nextDest.py << ")" << endl;
-            lr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
+            dr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
             continue;
         } else if (newDepth == 0) {
             cout << "Player messed up, rereading position" << endl;
@@ -148,10 +132,11 @@ int main() {
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
 
-        pw->goTo(nextPoint);
+        //pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
-            lr->readLaser();
-            mp->drawInternalMap(path, lr);
+            dr->readLaser();
+            dr->readFid();
+            mp->drawInternalMap(path);
             mp->drawMap(pw);
         }
     }
@@ -166,13 +151,13 @@ int main() {
 
     cout << "Saving map" << endl;
     path.clear();
-    mp->drawInternalMap(path, lr);
+    mp->drawInternalMap(path);
     mp->saveMap();
 
     cout << "Disconnecting Player" << endl;
     delete as;
     delete mp;
-    delete lr;
+    delete dr;
     delete pw;
 
     return 0;
