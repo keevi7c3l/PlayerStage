@@ -27,11 +27,11 @@ CLEAN_SUBPROJECTS=${CLEAN_SUBPROJECTS_${SUBPROJECTS}}
 PROJECTNAME=playerstage2
 
 # Active Configuration
-DEFAULTCONF=Debug
+DEFAULTCONF=FINAL
 CONF=${DEFAULTCONF}
 
 # All Configurations
-ALLCONFS=Debug Release 
+ALLCONFS=FINAL Release 
 
 
 # build

@@ -85,15 +85,15 @@ void Mapper::drawMap(PlayerWrapper *pw) {
             pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 2, 4, 0); //object
-            cvShowImage(map_window_name.c_str(), image);
-            cvWaitKey(10);
+            //cvShowImage(map_window_name.c_str(), image);
+            //cvWaitKey(10);
         }
     }
-    for (int x = 0; x < MAPSIZE_X; x++) {
-        for (int y = 0; y < MAPSIZE_Y; y++) {
-            drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
-        }
-    }
+    //    for (int x = 0; x < MAPSIZE_X; x++) {
+    //        for (int y = 0; y < MAPSIZE_Y; y++) {
+    //            drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
+    //        }
+    //    }
 }
 
 /*
@@ -101,9 +101,10 @@ void Mapper::drawMap(PlayerWrapper *pw) {
  */
 void Mapper::drawFid(double x, double y, int fid, IplImage *image) {
     if (fid != 0) {
+        /* Drawing on the big Map */
         if (image->height > 500) {
             /* Needs fixing */
-            pt.x = (x * 40)+4*centreX;
+            pt.x = (x * 40) + 4 * centreX;
             pt.y = (y * 40);
         } else {
             pt.x = (x * 15 + X_BOUND * 15);

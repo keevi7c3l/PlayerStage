@@ -22,7 +22,7 @@ AS=as
 
 # Macros
 CND_PLATFORM=GNU-Linux-x86
-CND_CONF=Debug
+CND_CONF=FINAL
 CND_DISTDIR=dist
 
 # Include project Makefile
@@ -44,8 +44,8 @@ OBJECTFILES= \
 CFLAGS=
 
 # CC Compiler Flags
-CCFLAGS=-m64 `pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
-CXXFLAGS=-m64 `pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -lpthread -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
+CCFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
+CXXFLAGS=`pkg-config --cflags playerc` `pkg-config --libs playerc` -std=c++0x -L/usr/local/lib  -lm -lcv -lhighgui -lcxcore -ljpeg 
 
 # Fortran Compiler Flags
 FFLAGS=
@@ -58,44 +58,44 @@ LDLIBSOPTIONS=
 
 # Build Targets
 .build-conf: ${BUILD_SUBPROJECTS}
-	"${MAKE}"  -f nbproject/Makefile-Debug.mk dist/Debug/GNU-Linux-x86/playerstage2
+	"${MAKE}"  -f nbproject/Makefile-FINAL.mk dist/FINAL/GNU-Linux-x86/playerstage2
 
-dist/Debug/GNU-Linux-x86/playerstage2: ${OBJECTFILES}
-	${MKDIR} -p dist/Debug/GNU-Linux-x86
+dist/FINAL/GNU-Linux-x86/playerstage2: ${OBJECTFILES}
+	${MKDIR} -p dist/FINAL/GNU-Linux-x86
 	${LINK.cc} -o ${CND_DISTDIR}/${CND_CONF}/${CND_PLATFORM}/playerstage2 ${OBJECTFILES} ${LDLIBSOPTIONS} 
 
 ${OBJECTDIR}/PathPlanner.o: PathPlanner.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/PathPlanner.o PathPlanner.cpp
+	$(COMPILE.cc) -O3 -Wall -s -MMD -MP -MF $@.d -o ${OBJECTDIR}/PathPlanner.o PathPlanner.cpp
 
 ${OBJECTDIR}/main.o: main.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
+	$(COMPILE.cc) -O3 -Wall -s -MMD -MP -MF $@.d -o ${OBJECTDIR}/main.o main.cpp
 
 ${OBJECTDIR}/PlayerWrapper.o: PlayerWrapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
+	$(COMPILE.cc) -O3 -Wall -s -MMD -MP -MF $@.d -o ${OBJECTDIR}/PlayerWrapper.o PlayerWrapper.cpp
 
 ${OBJECTDIR}/DataReader.o: DataReader.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataReader.o DataReader.cpp
+	$(COMPILE.cc) -O3 -Wall -s -MMD -MP -MF $@.d -o ${OBJECTDIR}/DataReader.o DataReader.cpp
 
 ${OBJECTDIR}/Mapper.o: Mapper.cpp 
 	${MKDIR} -p ${OBJECTDIR}
 	${RM} $@.d
-	$(COMPILE.cc) -O3 -Wall -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapper.o Mapper.cpp
+	$(COMPILE.cc) -O3 -Wall -s -MMD -MP -MF $@.d -o ${OBJECTDIR}/Mapper.o Mapper.cpp
 
 # Subprojects
 .build-subprojects:
 
 # Clean Targets
 .clean-conf: ${CLEAN_SUBPROJECTS}
-	${RM} -r build/Debug
-	${RM} dist/Debug/GNU-Linux-x86/playerstage2
+	${RM} -r build/FINAL
+	${RM} dist/FINAL/GNU-Linux-x86/playerstage2
 
 # Subprojects
 .clean-subprojects:

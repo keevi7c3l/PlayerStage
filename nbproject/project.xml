@@ -12,7 +12,7 @@
             <make-dep-projects/>
             <sourceRootList/>
             <confList>
-                <confElem>Debug</confElem>
+                <confElem>FINAL</confElem>
                 <confElem>Release</confElem>
             </confList>
         </data>

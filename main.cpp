@@ -1,3 +1,16 @@
+/*
+ * Team Charlie's Search & Rescue Mapping Robot v1.0
+ * Produced for King's College London
+ * 
+ * Authors: Pit Apps,
+ *          Paul Fontenay,
+ *          Vlad-Ovidiu Tutunea,
+ *          Erleene Lyder,
+ *          Nathaniel Ghilazghi,
+ *          Oliver Kelly
+ *
+ * Copyright 2011
+ */
 #include "DataReader.h"
 #include "PathPlanner.h"
 #include "PlayerWrapper.h"
@@ -132,7 +145,7 @@ int main() {
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
 
-        //pw->goTo(nextPoint);
+        pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
             dr->readFid();
