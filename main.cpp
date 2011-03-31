@@ -78,6 +78,14 @@ player_pose2d_t calcChange() {
     });
 }
 
+player_pose2d_t findClosestByRecursion() {
+    player_pose2d_t tempPath;
+    tempPath.px = -X_BOUND - 1;
+    tempPath.py = -Y_BOUND - 1;
+    as->findClosest2(dr->getMatrixValue(pw->getRobX()), dr->getMatrixValue(pw->getRobY()), &tempPath);
+    return tempPath;
+}
+
 int main() {
 
     cout << "Starting up robot" << endl;
@@ -109,8 +117,15 @@ int main() {
 
         /* This is to avoid the robot going back and forth between two equidistant points */
         if (dr->isObst(nextDest) || dr->isSeen(nextDest) || oldDepth < newDepth) {
+            
             cout << "Looking for new path" << endl;
-            nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+            
+            /* Old Findclosest */
+            // nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
+
+            /* New Findclosest */
+            nextDest = findClosestByRecursion();
+            
             oldDepth = 10000;
         }
 
@@ -150,7 +165,7 @@ int main() {
             dr->readLaser();
             dr->readFid();
             mp->drawInternalMap(path);
-            mp->drawMap(pw);
+            //mp->drawMap(pw);
         }
     }
 

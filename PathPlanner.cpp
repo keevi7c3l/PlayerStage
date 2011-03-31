@@ -140,6 +140,62 @@ player_pose2d_t Astar::findClosest(int x, int y) {
 }
 
 /*
+ * Clears the paths array
+ */
+void Astar::findClosest2(int x, int y, player_pose2d_t *path) {
+    for (int i = 0; i < MAPSIZE_X; i++) {
+        for (int j = 0; j < MAPSIZE_Y; j++) {
+            dr->paths[i][j] = false;
+        }
+    }
+    return findClosest2(x, y, path, dr->paths);
+}
+
+/*
+ * Recursively looks at the neighbouring (x,y) until it finds smth that is not obstacle
+ * and not seen yet.
+ * This does not seem to always work though.
+ */
+void Astar::findClosest2(int x, int y, player_pose2d_t *path, bool paths[MAPSIZE_X][MAPSIZE_Y]) {
+    cout << "findclosest started" << endl;
+    printf("(%d,%d) is seen: %d, is obstacle: %d\n", x, y, dr->isSeen(x, y), dr->isObst(x, y));
+
+    /* Not obstacle and not seen */
+    if (!dr->isSeen(x, y) && dr->isInMap(x, y) && !dr->isObst(x, y)) {
+        cout << "Found something" << endl;
+        path->px = dr->getCoorValue(x);
+        path->py = dr->getCoorValue(y);
+        return;
+    }
+
+
+    cout << "starting for loop with : " << x << ", " << y << endl;
+    cout << "starting for loop with : " << dr->getCoorValue(x) << ", " << dr->getCoorValue(y) << endl;
+    for (int mx = -1; mx <2; mx++) {
+        for (int my = -1; my <2; my++) {
+            //if (mx == 0 && my == 0) continue;
+            cout << "FORLOOP" << endl;
+            int newX = mx + x;
+            int newY = my + y;
+
+            /* The path has already been checked (avoid infinite loop) */
+            if (paths[newX][newY]) {
+                cout << "IsinPath" << endl;
+                continue;
+            }
+
+            /* The path is an obstacle, ignore. */
+            if (dr->isObst(newX, newY)) {
+                cout << "IsObst" << endl;
+                continue;
+            }
+            paths[newX][newY] = true;
+            return findClosest2(newX, newY, path, paths);
+        }
+    }
+}
+
+/*
  * Overloading for the findPath method. Converts the coordinates to matrix values.
  */
 int Astar::findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path) {

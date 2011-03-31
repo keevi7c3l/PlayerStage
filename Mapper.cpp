@@ -1,4 +1,5 @@
 #include "Mapper.h"
+#include "PathPlanner.h"
 
 /*
  * Constructor for the Mapper class; takes the desired width and height of the OpenCv
@@ -85,15 +86,15 @@ void Mapper::drawMap(PlayerWrapper *pw) {
             pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 2, 4, 0); //object
-           // cvShowImage(map_window_name.c_str(), image);
-            //cvWaitKey(10);
+            cvShowImage(map_window_name.c_str(), image);
+            cvWaitKey(10);
         }
     }
-//        for (int x = 0; x < MAPSIZE_X; x++) {
-//            for (int y = 0; y < MAPSIZE_Y; y++) {
-//                drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
-//            }
-//        }
+    for (int x = 0; x < MAPSIZE_X; x++) {
+        for (int y = 0; y < MAPSIZE_Y; y++) {
+            drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
+        }
+    }
 }
 
 /*
@@ -144,6 +145,9 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path) {
             /* Check for obstacles */
             if (dr->isObst(x, y)) {
                 cvLine(internalImage, pt, pt, objCol, 2, 4, 0);
+            }
+            if (dr->paths[x][y]) {
+                cvLine(internalImage, pt, pt,CV_RGB(255, 0, 0) , 3, 4, 0);
             }
             drawFid(newX, newY, dr->returnFid(x, y), internalImage);
         }
