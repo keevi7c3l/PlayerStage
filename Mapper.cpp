@@ -15,7 +15,7 @@ Mapper::Mapper(int width, int height, DataReader *dr) : isMap(false), isIntMap(f
     this->image = cvCreateImage(cvSize(width, height), 8, 3);
 
     this->internal_window_name = "Internal Map";
-    this->internalImage = cvCreateImage(cvSize(350, 350), 8, 3);
+    this->internalImage = cvCreateImage(cvSize(500, 500), 8, 3);
 
     this->dr = dr;
 }
@@ -85,15 +85,15 @@ void Mapper::drawMap(PlayerWrapper *pw) {
             pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 2, 4, 0); //object
-            //cvShowImage(map_window_name.c_str(), image);
+           // cvShowImage(map_window_name.c_str(), image);
             //cvWaitKey(10);
         }
     }
-    //    for (int x = 0; x < MAPSIZE_X; x++) {
-    //        for (int y = 0; y < MAPSIZE_Y; y++) {
-    //            drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
-    //        }
-    //    }
+//        for (int x = 0; x < MAPSIZE_X; x++) {
+//            for (int y = 0; y < MAPSIZE_Y; y++) {
+//                drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
+//            }
+//        }
 }
 
 /*

@@ -88,7 +88,7 @@ int main() {
     dr = new DataReader(pw);
 
     cout << "Creating Mapper" << endl;
-    mp = new Mapper(1000, 1000, dr);
+    mp = new Mapper(1000, 1200, dr);
 
     cout << "Creating PathFinder" << endl;
     as = new Astar(dr);

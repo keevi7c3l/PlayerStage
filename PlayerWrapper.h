@@ -17,8 +17,8 @@
 
 #include <iostream>
 #include <libplayerc/playerc.h>
-#define X_BOUND 12 // For building3
-#define Y_BOUND 12
+#define X_BOUND 13 // For eval
+#define Y_BOUND 13
 #define SCALE 10
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (Y_BOUND*2*SCALE)
