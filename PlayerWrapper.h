@@ -17,9 +17,9 @@
 
 #include <iostream>
 #include <libplayerc/playerc.h>
-#define X_BOUND 13 // For eval
+#define X_BOUND 13 // The maximum X on a given map (can be changed for bigger maps)
 #define Y_BOUND 13
-#define SCALE 10
+#define SCALE 10 // consider up to 10cm
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (Y_BOUND*2*SCALE)
 #define PADDING 0.40 // Padding used around obstacles

@@ -154,7 +154,7 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path) {
 /*
  * Saves both the internal and external maps as .jpg files.
  *
- * This crashes on earlier versions of OpenCV
+ * This crashes on the departmental OpenCV version.
  */
 void Mapper::saveMap() {
 

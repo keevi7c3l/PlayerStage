@@ -78,6 +78,11 @@ player_pose2d_t calcChange() {
     });
 }
 
+/*
+ * Executes the findClosest() method. Sometimes this will not find something (because
+ * player is not very precise sometimes), in that case
+ * we retest from a point slightly further away from an object.
+ */
 player_pose2d_t findClosestPoint() {
     player_pose2d_t tempPath;
     tempPath.px = -X_BOUND - 1;
@@ -111,6 +116,9 @@ int main(int argc, char* argv[]) {
     };
     int oldDepth = 10000;
     int newDepth = 100000;
+    /* Used for optional return to starting point */
+    double initialX = nextDest.px;
+    double initialY = nextDest.py;
 
     timeval start, end;
     gettimeofday(&start, NULL);
@@ -137,7 +145,7 @@ int main(int argc, char* argv[]) {
 
         if ((newDepth = as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) == -1) {
             cout << "No Path found from (" << pw->getRobX() << ", " << pw->getRobY() << ") to (" << nextDest.px << ", " << nextDest.py << ")" << endl;
-            /* Not used anymore */
+            /* Not used with findClosest2(), needed for the old findClosest() though */
             //dr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
             continue;
         } else if (newDepth == 0) {
@@ -165,7 +173,7 @@ int main(int argc, char* argv[]) {
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
             dr->readFid();
-            //mp->drawMap(pw); // this does not work on older OpenCV versions
+            mp->drawMap(pw);
         }
     }
 
@@ -178,9 +186,20 @@ int main(int argc, char* argv[]) {
     cout << "Mapping took: " << mins << " minutes, " << secs << " seconds." << endl;
 
     cout << "Saving map" << endl;
-    path.clear();
+    path.clear(); // we don't want the path on the final internal map
     mp->drawInternalMap(path);
-    mp->saveMap();
+    
+    // mp->saveMap(); // this does not work on the departmental OpenCV version
+
+    /*  Optional Return to starting point
+     *  (uncomment if you want the robot to return to where it started)
+     */
+    
+    //    while (!isArrived(initialX, initialY)) {
+    //        as->findPath(pw->getRobX(), pw->getRobY(), initialX, initialY, &path);
+    //        player_pose2d_t nextPoint = calcChange();
+    //        pw->goTo(nextPoint);
+    //    }
 
     cout << "Disconnecting Player" << endl;
     delete as;

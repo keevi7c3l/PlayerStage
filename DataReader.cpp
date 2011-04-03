@@ -129,6 +129,9 @@ void DataReader::setIsland(int mx, int my) {
     }
 }
 
+/*
+ * This method sets adds detected fiducials to the array.
+ */
 void DataReader::setFid(int id, double x, double y) {
     int newX = getMatrixValue(x);
     int newY = getMatrixValue(y);
