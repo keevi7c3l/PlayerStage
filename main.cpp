@@ -137,7 +137,8 @@ int main(int argc, char* argv[]) {
 
         if ((newDepth = as->findPath(pw->getRobX(), pw->getRobY(), nextDest.px, nextDest.py, &path)) == -1) {
             cout << "No Path found from (" << pw->getRobX() << ", " << pw->getRobY() << ") to (" << nextDest.px << ", " << nextDest.py << ")" << endl;
-            dr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
+            /* Not used anymore */
+            //dr->setIsland(nextDest.px, nextDest.py); // Trying to go somewhere that is unreachable
             continue;
         } else if (newDepth == 0) {
             cout << "Player messed up, rereading position" << endl;
@@ -164,7 +165,7 @@ int main(int argc, char* argv[]) {
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
             dr->readFid();
-            mp->drawMap(pw);
+            //mp->drawMap(pw);
         }
     }
 
