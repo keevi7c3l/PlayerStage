@@ -28,13 +28,13 @@ vector<player_pose2d_t> path;
 /*
  * Debug method for printing the current path (unused)
  */
-void printPath() {
-    vector<player_pose2d_t>::iterator it = path.begin();
-    while (it != path.end()) {
-        cout << "(" << it->px << ", " << it->py << ")" << endl;
-        it++;
-    }
-}
+//void printPath() {
+//    vector<player_pose2d_t>::iterator it = path.begin();
+//    while (it != path.end()) {
+//        cout << "(" << it->px << ", " << it->py << ")" << endl;
+//        it++;
+//    }
+//}
 
 /*
  * Returns true if the robot has arrived at a destination (tx,ty).
@@ -78,11 +78,16 @@ player_pose2d_t calcChange() {
     });
 }
 
-player_pose2d_t findClosestByRecursion() {
+player_pose2d_t findClosestPoint() {
     player_pose2d_t tempPath;
     tempPath.px = -X_BOUND - 1;
     tempPath.py = -Y_BOUND - 1;
-    as->findClosest2(dr->getMatrixValue(pw->getRobX()), dr->getMatrixValue(pw->getRobY()), &tempPath);
+    /* This is a similar check as found in the main aStar, player sometimes "barricades" itself in */
+    while (as->findClosest2(dr->getMatrixValue(pw->getRobX()), dr->getMatrixValue(pw->getRobY()), &tempPath) == 0) {
+        cout << "Player messed up, rereading position" << endl;
+        pw->goTo(pw->getRobX() + 0.1, pw->getRobY() + 0.1); // Move away from object
+        pw->readClient();
+    }
     return tempPath;
 }
 
@@ -117,21 +122,14 @@ int main() {
 
         /* This is to avoid the robot going back and forth between two equidistant points */
         if (dr->isObst(nextDest) || dr->isSeen(nextDest) || oldDepth < newDepth) {
-            
             cout << "Looking for new path" << endl;
-            
-            /* Old Findclosest */
-            // nextDest = as->findClosest(pw->getRobX(), pw->getRobY());
-
-            /* New Findclosest */
-            nextDest = findClosestByRecursion();
-            
+            nextDest = findClosestPoint();
             oldDepth = 10000;
         }
 
         /* Robot has finished */
         if ((nextDest.px < -X_BOUND) && (nextDest.py <-Y_BOUND)) {
-            cout << "Whole Map has been traversed" << endl;
+            cout << "Whole Map has been traversed; depth:" << nextDest.pa << endl;
             break;
         }
 
@@ -154,18 +152,19 @@ int main() {
         player_pose2d_t nextPoint = calcChange();
 
         if (nextPoint.px == -X_BOUND && nextPoint.py == -Y_BOUND) {
-            cout << "calcChanged messed up" << endl;
+            cout << "calcChanged messed up" << endl; // This should not happen
             continue;
         }
 
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
 
+        mp->drawInternalMap(path);
+        
         pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
             dr->readFid();
-            mp->drawInternalMap(path);
-            //mp->drawMap(pw);
+            mp->drawMap(pw);
         }
     }
 

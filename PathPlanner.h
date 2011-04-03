@@ -67,15 +67,11 @@ public:
 
     }
     int findPath(double sx, double sy, double tx, double ty, vector<player_pose2d_t> *path); // Method Overload
-    player_pose2d_t findClosest(double currX, double currY); // Method Overload
-    void findClosest2(int x, int y, player_pose2d_t *path, bool paths[MAPSIZE_X][MAPSIZE_Y]);
-    void findClosest2(int x, int y, player_pose2d_t *path);
+    int findClosest2(int x, int y, player_pose2d_t *path);
 private:
     DataReader *dr;
     Node nodes[MAPSIZE_X][MAPSIZE_Y];
 
-    player_pose2d_t findClosest(int x, int y);
-    bool isInProximity(int x, int y, int tx, int ty);
     bool isInvalid(int sx, int sy, int x, int y);
     int findPath(int sx, int sy, int tx, int ty, vector<player_pose2d_t> *path);
 };

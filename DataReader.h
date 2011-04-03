@@ -74,7 +74,6 @@ public:
     double getCoorValue(int i);
 
     void setIsland(double sx, double sy);
-    bool paths[MAPSIZE_X][MAPSIZE_Y];
 private:
     PlayerWrapper *pw;
 

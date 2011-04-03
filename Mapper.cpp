@@ -18,6 +18,9 @@ Mapper::Mapper(int width, int height, DataReader *dr) : isMap(false), isIntMap(f
     this->internal_window_name = "Internal Map";
     this->internalImage = cvCreateImage(cvSize(500, 500), 8, 3);
 
+    image->ID = 0;
+    internalImage->ID = 1;
+
     this->dr = dr;
 }
 
@@ -69,10 +72,39 @@ void Mapper::drawPath(std::vector<player_pose2d_t> path) {
 }
 
 /*
+ * Draws fiducials onto a given IplImage (image of a map).
+ */
+void Mapper::drawFid(double x, double y, int fid, IplImage *image) {
+    if (fid != 0) {
+        /* Drawing on the big Map */
+        if (image->ID == 0) {
+            pt.x = (x * 40) + 4 * centreX;
+            pt.y = (height/2)-(y*40);
+        }
+        /* Drawing on the internal Map */
+        else {
+            pt.x = (x * 15 + X_BOUND * 15);
+            pt.y = (y * 15 + Y_BOUND * 15);
+        }
+        if (fid == FIRE) {
+            cvCircle(image, pt, 10, CV_RGB(255, 215, 0), -1);
+        } else {
+            CvPoint one = (CvPoint){pt.x - 10, pt.y - 10};
+            CvPoint two = (CvPoint){pt.x + 10, pt.y + 10};
+            if (fid == DEAD) {
+                cvRectangle(image, one, two, CV_RGB(255, 0, 0), -1);
+            } else if (fid == LIVING) {
+                cvRectangle(image, one, two, CV_RGB(222, 184, 135), -1);
+            }
+        }
+    }
+}
+
+/*
  * Draws the external map.
  */
 void Mapper::drawMap(PlayerWrapper *pw) {
-    if (!isMap) mapInit();
+    if (!isMap) mapInit(); // has it been initialised already?
     pt.x = centreX;
     pt.y = centreY;
     float dist, angle;
@@ -86,42 +118,6 @@ void Mapper::drawMap(PlayerWrapper *pw) {
             pt.y = (int) (pt1.y - (sin(angle) * dist * 40));
             cvLine(image, pt1, pt, freeCol, 1, 4, 0); //free
             cvLine(image, pt, pt, objCol, 2, 4, 0); //object
-            cvShowImage(map_window_name.c_str(), image);
-            cvWaitKey(10);
-        }
-    }
-    for (int x = 0; x < MAPSIZE_X; x++) {
-        for (int y = 0; y < MAPSIZE_Y; y++) {
-            drawFid(dr->getCoorValue(x), dr->getCoorValue(y), dr->returnFid(x, y), image);
-        }
-    }
-}
-
-/*
- * Draws fiducials onto a given IplImage (image of a map)
- */
-void Mapper::drawFid(double x, double y, int fid, IplImage *image) {
-    if (fid != 0) {
-        /* Drawing on the big Map */
-        if (image->height > 500) {
-            /* Needs fixing */
-            pt.x = (x * 40) + 4 * centreX;
-            pt.y = (y * 40);
-        } else {
-            pt.x = (x * 15 + X_BOUND * 15);
-            pt.y = (y * 15 + Y_BOUND * 15);
-        }
-        if (fid == FIRE) {
-            cvCircle(image, pt, 10, CV_RGB(255, 215, 0), -1);
-        } else {
-            /* Needs improving */
-            CvPoint one = (CvPoint){pt.x - 10, pt.y - 10};
-            CvPoint two = (CvPoint){pt.x + 10, pt.y + 10};
-            if (fid == DEAD) {
-                cvRectangle(image, one, two, CV_RGB(255, 0, 0), -1);
-            } else if (fid == LIVING) {
-                cvRectangle(image, one, two, CV_RGB(222, 184, 135), -1);
-            }
         }
     }
 }
@@ -145,9 +141,6 @@ void Mapper::drawInternalMap(std::vector<player_pose2d_t> path) {
             /* Check for obstacles */
             if (dr->isObst(x, y)) {
                 cvLine(internalImage, pt, pt, objCol, 2, 4, 0);
-            }
-            if (dr->paths[x][y]) {
-                cvLine(internalImage, pt, pt,CV_RGB(255, 0, 0) , 3, 4, 0);
             }
             drawFid(newX, newY, dr->returnFid(x, y), internalImage);
         }

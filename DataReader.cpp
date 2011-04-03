@@ -111,6 +111,8 @@ void DataReader::setIsland(double sx, double sy) {
  * Recursive function that turns unreachable "islands" into objects (i.e. intraverisble).
  * It takes on point within the island and then recursively sets all the points around it
  * to obstacles until it reaches the walls of the island.
+ *
+ * Thanks to the new findClosest method, this should not be needed anymore.
  */
 void DataReader::setIsland(int mx, int my) {
     for (int x = -1; x < 2; x++) {
