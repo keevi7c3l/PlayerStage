@@ -165,7 +165,7 @@ int main(int argc, char* argv[]) {
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
             dr->readFid();
-            //mp->drawMap(pw);
+            //mp->drawMap(pw); // this does not work on older OpenCV versions
         }
     }
 
