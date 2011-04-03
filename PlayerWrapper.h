@@ -22,7 +22,7 @@
 #define SCALE 10
 #define MAPSIZE_X (X_BOUND*2*SCALE)
 #define MAPSIZE_Y (Y_BOUND*2*SCALE)
-#define PADDING 0.4 // Padding used around obstacles
+#define PADDING 0.39 // Padding used around obstacles
 
 class PlayerWrapper {
 public:

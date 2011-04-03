@@ -91,7 +91,7 @@ player_pose2d_t findClosestPoint() {
     return tempPath;
 }
 
-int main() {
+int main(int argc, char* argv[]) {
 
     cout << "Starting up robot" << endl;
     pw = new PlayerWrapper(6665);
@@ -159,7 +159,7 @@ int main() {
         cout << "Going to:" << "(" << nextPoint.px << ", " << nextPoint.py << ")" << endl;
 
         mp->drawInternalMap(path);
-        
+
         pw->goTo(nextPoint);
         while (!isArrived(nextPoint.px, nextPoint.py)) {
             dr->readLaser();
